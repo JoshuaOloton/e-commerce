@@ -1,9 +1,103 @@
-import React from 'react'
+"use client";
 
-type Props = {}
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { LoginSchema, LoginFormFields } from "@/schemas";
+import { signIn, SignInResponse } from "next-auth/react";
+import { toast } from "sonner";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-export default function page({}: Props) {
+export default function page() {
+  const router = useRouter();
+  const { data : session, status} = useSession();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormFields>({
+    resolver: zodResolver(LoginSchema),
+  });
+
+  const onSubmit: SubmitHandler<LoginFormFields> = async (formData) => {
+    console.log("Am i here");
+    const result : SignInResponse | undefined = await signIn("credentials", {
+      email: formData.email,
+      password: formData.password,
+      redirect: false
+    });
+    
+    console.log('result', result);
+    if (result?.error) {
+      toast.error("Please check your credentials and try again.");
+      return;
+    }
+
+    router.push("/");
+    toast.success("Login successful");
+  };
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.replace("/");
+    }
+  })
+
+  // if (session) {
+  //   router.replace("/");
+  // }
+
   return (
-    <div>login page</div>
-  )
+    <section>
+      <div className="flex justify-center h-screen">
+        <div className="flex-1  hidden md:block">E-commerce App</div>
+        <div className="flex items-center flex-1">
+          <div className="flex flex-col gap-5 w-4/5 max-w-96 mx-auto">
+            <div className="">
+              <h5 className="font-bold text-3xl md:text-4xl">Welcome👋</h5>
+              <p className="text-gray-400">Please login here</p>
+            </div>
+            <form
+              className="flex flex-col space-y-5"
+              method="post"
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <label>
+                <span className="form_label">
+                  Email Address <span className="text-red-900">*</span>
+                </span>
+                <Input type="email" {...register("email")} />
+                {errors.email && (
+                  <span className="error_span">{errors.email.message}</span>
+                )}
+              </label>
+              <label>
+                <span className="form_label">
+                  Password <span className="text-red-900">*</span>
+                </span>
+                <Input type="password" {...register("password")} />
+                {errors.password && (
+                  <span className="error_span">{errors.password.message}</span>
+                )}
+              </label>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Loading..." : "Login"}
+              </Button>
+            </form>
+            <p className="">
+              Don't have an account?{" "}
+              <Link href="/register" className="text-blue-500">
+                Register
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

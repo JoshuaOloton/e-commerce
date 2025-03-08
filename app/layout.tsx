@@ -1,15 +1,35 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import {
+  Jost,
+  Merriweather,
+  Merriweather_Sans,
+  Space_Grotesk
+} from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+import LayoutWrapper from "./LayoutWrapper";
+
+const jost = Jost({
+  variable: "--font-jost",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const merriweather = Merriweather({
+  variable: "--font-merriweather",
   subsets: ["latin"],
+  weight: ["300", "400", "700"],
+});
+
+const merriweatherSans = Merriweather_Sans({
+  variable: "--font-merriweather-sans",
+  subsets: ["latin"],
+  weight: ["300", "400", "700"],
+});
+
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
 });
 
 export const metadata: Metadata = {
@@ -25,9 +45,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning
+        className={`${jost.variable} ${merriweather.variable} ${merriweatherSans.variable} ${spaceGrotesk.variable} antialiased`}
+        suppressHydrationWarning
       >
-        {children}
+        <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>
   );
