@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 const page = () => {
   const params = useParams();
   const router = useRouter();
-  const { name } = params as { name: string };
+  const { id } = params as { id: string };
 
   const [product, setProduct] = useState<ProductSchema | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -22,7 +22,7 @@ const page = () => {
     const fetchProduct = () => {
       try {
         const productData = products.find(
-          (product) => product.name === decodeURIComponent(name)
+          (product) => product.id.toString() === decodeURIComponent(id)
         );
         if (productData) {
           setProduct(productData);
@@ -69,11 +69,11 @@ const page = () => {
             {placeOffer ? (
               <div className="mt-4">
                 <Input type="number" />
-                <Button className="mt-4 w-full">Submit Offer</Button>
+                <Button className="mt-4 w-full cursor-pointer">Submit Offer</Button>
               </div>
             ) : (
               <Button
-                className="mt-4 w-full"
+                className="mt-4 w-full cursor-pointer"
                 onClick={() => setPlaceOffer(true)}
               >
                 Make Offer

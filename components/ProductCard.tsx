@@ -2,11 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 
 const ProductCard = ({
+  id,
   name,
   image,
   desc,
   price,
 }: {
+  id: string;
   name: string;
   image: string;
   desc: string;
@@ -15,7 +17,7 @@ const ProductCard = ({
   return (
     <Link
       className="ring ring-blue-500/20 p-4 rounded-lg bg-gray-50 hover:bg-gray-200 cursor-pointer hover:shadow-lg shadow-cyan-500/20 transition-all duration-700 group"
-      href={`/products/${name}`}
+      href={`/products/${id}`}
     >
       <div className="w-4/5 mx-auto flex flex-col gap-6 ">
         <div className="w-52 h-52 mx-auto relative">

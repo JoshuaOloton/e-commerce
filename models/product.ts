@@ -6,7 +6,9 @@ interface IProduct extends Document {
   price: number;
   stock: number;
   category: string;
-  images: string[];
+  images: string;
+  dealAccepted?: boolean;
+  dealPrice?: number;
 }
 
 const ProductSchema = new Schema<IProduct>(
@@ -16,7 +18,7 @@ const ProductSchema = new Schema<IProduct>(
     price: { type: Number, required: true },
     stock: { type: Number, required: true },
     category: { type: String, required: true },
-    images: { type: [String], default: [] }, // Store image URLs
+    images: { type: String, required: true }, // Store image URL
   },
   { timestamps: true }
 );
