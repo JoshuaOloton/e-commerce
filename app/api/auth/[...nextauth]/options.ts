@@ -3,6 +3,33 @@ import User from "@/models/user";
 import { connectDB } from "@/utils/db";
 import { LoginSchema } from "@/schemas";
 import type { NextAuthOptions } from "next-auth";
+import { Session } from "next-auth";
+import { DefaultJWT } from "next-auth/jwt";
+import { DefaultUser } from "next-auth";
+
+
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      _id: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+      role: string;
+    };
+  }
+
+  interface User extends DefaultUser {
+    role: string;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface DefaultJWT {
+    role: string;
+  }
+}
 
 export const options: NextAuthOptions = {
   pages: {
@@ -47,4 +74,21 @@ export const options: NextAuthOptions = {
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user, profile }) {
+      console.log("jwt profile", profile);
+      if (user) token.role = user.role;
+      return token;
+    },
+
+    async session({ session, token }) {
+      if (session?.user) {
+        const sessionUser = await User.findOne({ email: session.user.email });
+
+        session.user._id = sessionUser?._id;
+        session.user.role = token.role;
+      }
+      return session;
+    }
+  }
 };
