@@ -1,8 +1,9 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
 import { categories } from "@/app/data";
 import { Button } from "./ui/button";
-import { Ref, useRef } from "react";
+import { Ref } from "react";
 import CategoryCard from "./CategoryCard";
 import Link from "next/link";
 
@@ -28,9 +29,12 @@ const Categories = ({
           ))}
         </div>
         <div className="my-6 md:my-12 text-center">
-          <Button className="text-base cursor-pointer w-full">
-            <Link href="/products">View All Products</Link>
-          </Button>
+          <Link href="/products">
+            <Button className="text-base cursor-pointer w-full py-5">
+              View All Products
+              <ArrowRight />
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

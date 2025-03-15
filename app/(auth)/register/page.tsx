@@ -1,18 +1,20 @@
 "use client";
 
-import React from "react";
 import axios from "axios";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RegisterSchema, RegisterFormFields } from "@/schemas";
 import { toast } from "sonner";
+import { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function page() {
   const router = useRouter();
+  const { data: session, status } = useSession();
 
   const {
     register,
@@ -38,13 +40,20 @@ export default function page() {
     }
   };
 
+  useEffect(() => {
+      if (status === "authenticated") {
+        toast.info("You are already logged in.");
+        router.replace("/");
+      }
+    })
+
   return (
     <section>
-      <div className="flex justify-center h-screen border border-black">
-        <div className="flex-1 border border-black hidden md:block">
+      <div className="flex justify-center h-screen">
+        <div className="flex-1 hidden md:block">
           E-commerce App
         </div>
-        <div className="flex items-center border border-black flex-1">
+        <div className="flex items-center flex-1">
           <div className="flex flex-col gap-5 w-4/5 max-w-96 mx-auto">
             <div className="mb-6">
               <h5 className="font-bold text-3xl md:text-4xl">Create Account</h5>

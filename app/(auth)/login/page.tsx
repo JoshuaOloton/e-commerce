@@ -44,13 +44,10 @@ export default function page() {
 
   useEffect(() => {
     if (status === "authenticated") {
+      toast.info("You are already logged in.");
       router.replace("/");
     }
-  })
-
-  // if (session) {
-  //   router.replace("/");
-  // }
+  });
 
   return (
     <section>
