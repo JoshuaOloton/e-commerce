@@ -24,11 +24,13 @@ const Navbar = () => {
 
   return (
     <header>
-      <div className="flex justify-between items-center px-4 py-3 relative border border-gray-400 font-jost">
-        <div className="logo font-bold tracking-wider">NavLogo</div>
+      <div className="flex justify-between items-center px-4 relative border border-gray-400 font-jost">
+        <div className="logo font-bold tracking-wider">
+          <Link href={"/"}>NavLogo</Link>
+        </div>
 
         {/* Mobile Nav */}
-        <div className="sm:hidden">
+        <div className="sm:hidden h-10 flex items-center">
           <User
             size={26}
             onClick={() => setIsMenuOpen((prevState) => !prevState)}
@@ -65,7 +67,7 @@ const Navbar = () => {
         </div>
 
         {/* Desktop Nav */}
-        <ul className="hidden sm:flex space-x-4 items-center">
+        <ul className="hidden sm:flex space-x-4 items-center h-14">
           <li>
             <Link href="/" className="transition-all duration-300 hover:text-gray-600">Home</Link>
           </li>

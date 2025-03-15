@@ -2,6 +2,9 @@
 
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistor, store } from '../lib/store';
+import { Provider } from 'react-redux';
 import { SessionProvider } from 'next-auth/react'
 import { Toaster } from 'sonner'
 import { usePathname } from 'next/navigation';
@@ -13,10 +16,14 @@ const LayoutWrapper = ({ children } : { children : React.ReactNode } ) => {
 
   return (
     <SessionProvider>
-      <Toaster richColors />
-      {!hideNavbar && <Navbar /> }
-      {children}
-      <Footer />
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <Toaster richColors />
+          {!hideNavbar && <Navbar /> }
+          {children}
+          <Footer />
+        </PersistGate>
+      </Provider>
     </SessionProvider>
   )
 }

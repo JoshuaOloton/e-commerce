@@ -138,3 +138,7 @@
 .error_span {
   @apply text-red-500 text-xs;
 }
+
+.filter_option {
+  @apply flex gap-1;
+}
