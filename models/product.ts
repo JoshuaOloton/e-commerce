@@ -2,23 +2,23 @@ import mongoose, { Schema, Document } from "mongoose";
 
 interface IProduct extends Document {
   name: string;
-  description: string;
+  desc: string;
   price: number;
-  stock: number;
   category: string;
-  images: string;
-  dealAccepted?: boolean;
+  image: string;
+  dealAccepted: boolean;
   dealPrice?: number;
 }
 
 const ProductSchema = new Schema<IProduct>(
   {
-    name: { type: String, required: true },
-    description: { type: String, required: true },
+    name: { type: String, required: true, unique: true },
+    desc: { type: String, required: true },
     price: { type: Number, required: true },
-    stock: { type: Number, required: true },
-    category: { type: String, required: true },
-    images: { type: String, required: true }, // Store image URL
+    category: { type: String, required: true, index: true },
+    image: { type: String, required: true }, // Store image URL
+    dealAccepted: { type: Boolean, required: true, default: false, index: true },
+    dealPrice: { type: Number, required: false },
   },
   { timestamps: true }
 );
