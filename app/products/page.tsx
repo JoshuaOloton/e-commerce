@@ -10,17 +10,22 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import SearchBar from "@/components/SearchBar";
 
 const page = () => {
   const dispatch = useDispatch();
   const filters = useSelector(
     (state: RootState) => state.filters.selectedFilters
   );
-  console.log(filters);
 
+  const [query, setQuery] = useState("");
   const [filteredProducts, setfilteredProducts] =
     useState<ProductSchema[]>(products);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const handleSearch = () => {
+    
+  }
 
   useEffect(() => {
     // filter products by selected filters
@@ -116,18 +121,21 @@ const page = () => {
                 <Skeleton className="h-40 w-full" />
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    id={product.id}
-                    name={product.name}
-                    image={product.image}
-                    desc={product.desc}
-                    price={product.price}
-                  />
-                ))}
-              </div>
+              <>
+                <SearchBar />
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredProducts.map((product) => (
+                    <ProductCard
+                      key={product.id}
+                      id={product.id}
+                      name={product.name}
+                      image={product.image}
+                      desc={product.desc}
+                      price={product.price}
+                    />
+                  ))}
+                </div>
+              </>
             )}
           </div>
         </div>

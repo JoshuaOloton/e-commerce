@@ -1,13 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import { products } from "@/app/data";
-import { ProductSchema } from "@/types";
-import { toast } from "sonner";
-import { use, useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { products } from "@/app/data";
+import { ProductSchema } from "@/types";
+import { OfferSchema } from "@/schemas";
+import { toast } from "sonner";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
 
 const page = () => {
   const params = useParams();
@@ -18,6 +23,30 @@ const page = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [placeOffer, setPlaceOffer] = useState<boolean>(false);
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<z.infer<typeof OfferSchema>>({
+    resolver: zodResolver(OfferSchema),
+  });
+
+  const onSubmit: SubmitHandler<z.infer<typeof OfferSchema>> = async (
+    formData
+  ) => {
+    try {
+      const response = await axios.post(`/api/offer`, formData);
+      console.log(response);
+      if (response.status === 201) {
+        toast.success("Offer submitted successfully");
+        router.push("/products");
+      }
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error.response.data);
+    }
+  };
+
   useEffect(() => {
     const fetchProduct = () => {
       try {
@@ -26,7 +55,6 @@ const page = () => {
         );
         if (productData) {
           setProduct(productData);
-          console.log(productData);
         } else {
           router.push("/products");
           toast.error("Product not found");
@@ -68,8 +96,22 @@ const page = () => {
             <p>{product.desc}</p>
             {placeOffer ? (
               <div className="mt-4">
-                <Input type="number" />
-                <Button className="mt-4 w-full cursor-pointer">Submit Offer</Button>
+                <form method="post" onSubmit={handleSubmit(onSubmit)}>
+                  <label>
+                    <span className="text-gray-700 text-sm font-medium">
+                      Offer Price <span className="text-red-900">*</span>
+                    </span>
+                  </label>
+                  <Input {...register("offerPrice")} type="number" />
+                  <Button className="mt-4 w-full cursor-pointer" type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? "Loading..." : "Submit Offer"}
+                  </Button>
+                  {errors.offerPrice && (
+                    <span className="error_span">
+                      {errors.offerPrice.message}
+                    </span>
+                  )}
+                </form>
               </div>
             ) : (
               <Button
@@ -81,7 +123,6 @@ const page = () => {
             )}
           </div>
         </div>
-        {/* <p>Welcome to the {decodeURIComponent(name)} page</p> */}
       </div>
     </div>
   );

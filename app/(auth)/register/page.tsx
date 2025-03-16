@@ -45,7 +45,7 @@ export default function page() {
         toast.info("You are already logged in.");
         router.replace("/");
       }
-    })
+    }, []);
 
   return (
     <section>

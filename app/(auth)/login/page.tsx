@@ -7,14 +7,17 @@ import { LoginSchema, LoginFormFields } from "@/schemas";
 import { signIn, SignInResponse } from "next-auth/react";
 import { toast } from "sonner";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function page() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data : session, status} = useSession();
+
+  const hasShownToast = useRef(false); // to prevent multiple toasts
 
   const {
     register,
@@ -47,7 +50,15 @@ export default function page() {
       toast.info("You are already logged in.");
       router.replace("/");
     }
-  });
+  }, []);
+
+  useEffect(() => {
+    const errorMessage = searchParams.get("error");
+    if (errorMessage && !hasShownToast.current) {
+      toast.error("Please login to continue");
+      hasShownToast.current = true;
+    }
+  }, [searchParams]);
 
   return (
     <section>
