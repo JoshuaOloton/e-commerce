@@ -53,7 +53,7 @@ export default function page() {
   }, []);
 
   useEffect(() => {
-    const errorMessage = searchParams.get("error");
+    const errorMessage = searchParams.get("auth");
     if (errorMessage && !hasShownToast.current) {
       toast.error("Please login to continue");
       hasShownToast.current = true;
