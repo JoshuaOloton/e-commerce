@@ -4,19 +4,21 @@ import Image from "next/image";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { products } from "@/app/data";
 import { ProductSchema } from "@/types";
 import { OfferSchema } from "@/schemas";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useSession } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 
 const page = () => {
   const params = useParams();
   const router = useRouter();
+  const { data: session } = useSession();
+
   const { id } = params as { id: string };
 
   const [product, setProduct] = useState<ProductSchema | null>(null);
@@ -35,8 +37,13 @@ const page = () => {
     formData
   ) => {
     try {
-      const response = await axios.post(`/api/offer`, formData);
-      console.log(response);
+
+      const response = await axios.post(`/api/offers`, {
+        ...formData,
+        productId: id,
+        buyerId: session?.user?._id,
+      });
+
       if (response.status === 201) {
         toast.success("Offer submitted successfully");
         router.push("/products");
@@ -48,19 +55,16 @@ const page = () => {
   };
 
   useEffect(() => {
-    const fetchProduct = () => {
+    const fetchProduct = async () => {
       try {
-        const productData = products.find(
-          (product) => product.id.toString() === decodeURIComponent(id)
-        );
-        if (productData) {
-          setProduct(productData);
-        } else {
-          router.push("/products");
-          toast.error("Product not found");
-        }
-      } catch (error) {
-        toast.error(error as string);
+        const response = await axios.get(`/api/products/${id}`);
+        console.log(response);
+
+        const { data } = response;
+        setProduct(data);
+      } catch (error: any) {
+        console.log(error);
+        toast.error(error.response?.data);
       } finally {
         setLoading(false);
       }
@@ -69,7 +73,23 @@ const page = () => {
     fetchProduct();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <div className="w-full flex flex-col items-center justify-center my-10">
+        <div className="p-4 w-3/4 sm:w-5/6 max-w-5xl  flex flex-col sm:flex-row gap-1 md:gap-6">
+          <div className="bg-gray-100 flex-1/2 p-4 rounded">
+            <div className="animate-pulse bg-gray-300 w-full h-96 rounded"></div>
+          </div>
+          <div className="my-8 flex-1/2">
+            <div className="animate-pulse bg-gray-300 w-1/2 h-6 mb-2 rounded"></div>
+            <div className="animate-pulse bg-gray-300 w-1/4 h-6 mb-2 rounded"></div>
+            <div className="animate-pulse bg-gray-300 w-1/2 h-6 mb-2 rounded"></div>
+            <div className="animate-pulse bg-gray-300 w-1/2 h-6 mb-2 rounded"></div>
+            <div className="animate-pulse bg-gray-300 w-1/2 h-6 mb-2 rounded"></div>
+          </div>
+        </div>
+      </div>
+    );
 
   if (!product) return <p>Product not found</p>;
 
@@ -82,7 +102,7 @@ const page = () => {
             alt={product.name}
             width={300}
             height={300}
-            className="mx-auto"
+            className="mx-auto w-full"
           />
         </div>
         <div className="my-8 flex-1/2">
@@ -103,7 +123,11 @@ const page = () => {
                     </span>
                   </label>
                   <Input {...register("offerPrice")} type="number" />
-                  <Button className="mt-4 w-full cursor-pointer" type="submit" disabled={isSubmitting}>
+                  <Button
+                    className="mt-4 w-full cursor-pointer"
+                    type="submit"
+                    disabled={isSubmitting}
+                  >
                     {isSubmitting ? "Loading..." : "Submit Offer"}
                   </Button>
                   {errors.offerPrice && (
