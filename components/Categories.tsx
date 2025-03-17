@@ -1,17 +1,26 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
-import { categories } from "@/app/data";
-import { Button } from "./ui/button";
-import { Ref } from "react";
 import CategoryCard from "./CategoryCard";
-import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { Button } from "./ui/button";
+import { categories } from "@/app/data";
+import { Ref, use } from "react";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { clearFilters } from "@/lib/slices/slice";
 
 const Categories = ({
   sectionRef,
 }: {
   sectionRef: Ref<HTMLDivElement> | undefined;
 }) => {
+
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const navigateToProducts = () => {
+    dispatch(clearFilters());
+    router.push("/products");
+  };
 
   return (
     <section className="my-20 py-3" id="categories" ref={sectionRef}>
@@ -29,12 +38,12 @@ const Categories = ({
           ))}
         </div>
         <div className="my-6 md:my-12 text-center">
-          <Link href="/products">
+          <div onClick={navigateToProducts}>
             <Button className="text-base cursor-pointer w-full py-5">
               View All Products
               <ArrowRight />
             </Button>
-          </Link>
+          </div>
         </div>
       </div>
     </section>

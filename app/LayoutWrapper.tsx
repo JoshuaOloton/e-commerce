@@ -20,7 +20,9 @@ const LayoutWrapper = ({ children } : { children : React.ReactNode } ) => {
         <PersistGate loading={null} persistor={persistor}>
           <Toaster richColors />
           {!hideNavbar && <Navbar /> }
-          {children}
+          <div className="min-h-screen">
+            {children}
+          </div>
           <Footer />
         </PersistGate>
       </Provider>

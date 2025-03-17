@@ -3,6 +3,7 @@ import {
   Merriweather,
   Merriweather_Sans,
   Space_Grotesk,
+  Bowlby_One_SC
 } from "next/font/google";
 
 export const jost = Jost({
@@ -26,4 +27,10 @@ export const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
   subsets: ["latin"],
   weight: ["300", "400", "500", "700"],
+});
+
+export const bowlbyOneSC = Bowlby_One_SC({
+  variable: "--font-bowlby-one-sc",
+  subsets: ["latin"],
+  weight: ["400"],
 });

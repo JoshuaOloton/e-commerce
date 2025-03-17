@@ -18,7 +18,7 @@ const SearchBar = () => {
         type="text"
         value={query}
         onChange={handleChange}
-        placeholder="Search products now..."
+        placeholder="Search products..."
         className="w-full py-2 pl-12 pr-4 rounded-xl border border-gray-300"
       />
     </div>
