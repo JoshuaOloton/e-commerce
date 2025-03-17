@@ -1,7 +1,7 @@
 "use client";
 
+import axios from "axios";
 import { addFilter } from "@/lib/slices/slice";
-import { products } from "../data";
 import ProductCard from "@/components/ProductCard";
 import { ProductSchema } from "@/types";
 import { Square, SquareCheck } from "lucide-react";
@@ -19,17 +19,40 @@ const page = () => {
   );
 
   const [query, setQuery] = useState("");
-  const [filteredProducts, setfilteredProducts] =
-    useState<ProductSchema[]>(products);
+
+  const [products, setProducts] = useState<ProductSchema[]>([]);
+  const [filteredProducts, setfilteredProducts] = useState<ProductSchema[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const handleSearch = () => {
     
-  }
+  } 
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      
+      try {
+        const response = await axios.get("/api/products");
+
+        if (response.status === 200) 
+            setProducts(response.data);
+
+      } catch (error: any) {
+        console.log(error);
+        toast.error(`Error fetching products: ${error.response?.data}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
     // filter products by selected filters
-    const fetchProducts = () => {
+    const filterProducts = () => {
+      if (!products) return;
+      
       try {
         const filtered = products.filter((product) => {
           if (filters.length === 0) return true;
@@ -37,22 +60,16 @@ const page = () => {
         });
         setfilteredProducts(filtered);
       } catch (error) {
-      } finally {
-        setTimeout(() => {
-          setLoading(false);
-        }, 2000);
-      }
+        console.log("Error filtering products: ", error);
+      } 
     };
 
-    fetchProducts();
-  }, [filters]);
+    filterProducts();
+  }, [products, filters]);
 
   return (
     <div>
       <section className="my-20">
-        {/* <header>
-          <p className="text-xl md:text-3xl mb-6 md:mb-10 font-medium">Browse Products</p>
-        </header> */}
         <div className="w-5/6 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_75%] gap-6">
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
@@ -123,11 +140,12 @@ const page = () => {
             ) : (
               <>
                 <SearchBar />
+                <p className="font-bold mb-4">Showing 1- {filteredProducts.length} of {filteredProducts.length} products</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredProducts.map((product) => (
                     <ProductCard
-                      key={product.id}
-                      id={product.id}
+                      key={product._id}
+                      id={product._id}
                       name={product.name}
                       image={product.image}
                       desc={product.desc}
