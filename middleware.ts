@@ -10,7 +10,7 @@ export async function middleware(req: NextRequestWithAuth) {
 
   if (/^\/products\/[^\/]+$/.test(pathname) && !token) {
     const loginUrl = new URL("/login", req.nextUrl);
-    loginUrl.searchParams.set("error", "denied");
+    loginUrl.searchParams.set("auth", "denied");
     return NextResponse.redirect(loginUrl);
   }
 
