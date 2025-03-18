@@ -24,6 +24,8 @@ const page = () => {
   const [product, setProduct] = useState<ProductSchema | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [placeOffer, setPlaceOffer] = useState<boolean>(false);
+  const [hasMadeOffer, setHasMadeOffer] = useState<boolean>(false);
+  const [offerPrice, setOfferPrice] = useState<number>(0);
 
   const {
     register,
@@ -37,7 +39,6 @@ const page = () => {
     formData
   ) => {
     try {
-
       const response = await axios.post(`/api/offers`, {
         ...formData,
         productId: id,
@@ -55,13 +56,23 @@ const page = () => {
   };
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await axios.get(`/api/products/${id}`);
-        console.log(response);
+    const fetchProductandOffer = async () => {
+      if (!session) return;
 
-        const { data } = response;
-        setProduct(data);
+      try {
+        console.log("session, ", session);
+        const [productRes, offersRes] = await Promise.all([
+          axios.get(`/api/products/${id}`),
+          axios.get(
+            `/api/offers?productId=${id}&buyerId=${session?.user?._id}`
+          ),
+        ]);
+
+        setProduct(productRes.data);
+        if (offersRes.data.length > 0) {
+          setHasMadeOffer(true);
+          setOfferPrice(offersRes.data[0].price);
+        }
       } catch (error: any) {
         console.log(error);
         toast.error(error.response?.data);
@@ -70,8 +81,8 @@ const page = () => {
       }
     };
 
-    fetchProduct();
-  }, []);
+    fetchProductandOffer();
+  }, [id, session?.user?._id]);
 
   if (loading)
     return (
@@ -81,11 +92,11 @@ const page = () => {
             <div className="animate-pulse bg-gray-300 w-full h-96 rounded"></div>
           </div>
           <div className="my-8 flex-1/2">
+            <div className="animate-pulse bg-gray-300 w-3/4 h-6 mb-2 rounded"></div>
             <div className="animate-pulse bg-gray-300 w-1/2 h-6 mb-2 rounded"></div>
-            <div className="animate-pulse bg-gray-300 w-1/4 h-6 mb-2 rounded"></div>
-            <div className="animate-pulse bg-gray-300 w-1/2 h-6 mb-2 rounded"></div>
-            <div className="animate-pulse bg-gray-300 w-1/2 h-6 mb-2 rounded"></div>
-            <div className="animate-pulse bg-gray-300 w-1/2 h-6 mb-2 rounded"></div>
+            <div className="animate-pulse bg-gray-300 w-3/4 h-6 mb-2 rounded"></div>
+            <div className="animate-pulse bg-gray-300 w-3/4 h-6 mb-2 rounded"></div>
+            <div className="animate-pulse bg-gray-300 w-3/4 h-6 mb-2 rounded"></div>
           </div>
         </div>
       </div>
@@ -114,7 +125,17 @@ const page = () => {
           <div className="mt-4">
             <h5 className="font-bold">Description</h5>
             <p>{product.desc}</p>
-            {placeOffer ? (
+            { session?.user.role === 'user' ? (hasMadeOffer ? (
+              <div>
+                <p className="text-sm text-gray-500 mt-4">
+                  You have already made an offer for this product.
+                </p>
+                <p className="text-lg font-semibold text-gray-800">
+                  Your Offer Price:{" "}
+                  <span className="text-green-600">N{offerPrice}</span>
+                </p>
+              </div>
+            ) : placeOffer ? (
               <div className="mt-4">
                 <form method="post" onSubmit={handleSubmit(onSubmit)}>
                   <label>
@@ -144,6 +165,8 @@ const page = () => {
               >
                 Make Offer
               </Button>
+            )) : (
+              <Button className="mt-4 cursor-pointer">View Offers on Product</Button>
             )}
           </div>
         </div>
