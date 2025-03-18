@@ -12,18 +12,18 @@ import { usePathname } from 'next/navigation';
 const LayoutWrapper = ({ children } : { children : React.ReactNode } ) => {
 
   const pathname = usePathname();
-  const hideNavbar = pathname === '/login' || pathname === '/signup';
+  const hideNavFooter = pathname === '/login' || pathname === '/register';
 
   return (
     <SessionProvider>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <Toaster richColors />
-          {!hideNavbar && <Navbar /> }
+          {!hideNavFooter && <Navbar /> }
           <div className="min-h-screen">
             {children}
           </div>
-          <Footer />
+          {!hideNavFooter && <Footer /> }
         </PersistGate>
       </Provider>
     </SessionProvider>

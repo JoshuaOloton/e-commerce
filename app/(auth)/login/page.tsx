@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,7 +64,8 @@ export default function page() {
   return (
     <section>
       <div className="flex justify-center h-screen">
-        <div className="flex-1  hidden md:block">E-commerce App</div>
+        <div className="flex-1 relative hidden md:block p-0 bg-[url(/assets/images/auth2.jpeg)] bg-cover">
+        </div>
         <div className="flex items-center flex-1">
           <div className="flex flex-col gap-5 w-4/5 max-w-96 mx-auto">
             <div className="">

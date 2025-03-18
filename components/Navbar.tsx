@@ -17,9 +17,12 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const logOut = () => {
-    signOut(); // signout redirects to / home page by default
+    signOut({
+      redirect: false,
+    }); // signout redirects to / home page by default
     // pass redirect: false to signOut to prevent redirection
     toast.info("Logout successful");
+    router.replace("/");
   };
 
   return (

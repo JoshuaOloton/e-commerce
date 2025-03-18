@@ -5,4 +5,6 @@ export interface ProductSchema {
     image: string;
     category: string;
     desc: string;
+    dealAccepted?: boolean;
+    dealPrice?: number;
 }
