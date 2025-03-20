@@ -4,8 +4,8 @@ import Image from "next/image";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ProductSchema } from "@/types";
-import { OfferSchema } from "@/schemas";
+import { ProductType, OfferType } from "@/types";
+import { MakeOfferSchema } from "@/schemas";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -14,6 +14,20 @@ import { useSession } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Check, X } from "lucide-react";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+
 const page = () => {
   const params = useParams();
   const router = useRouter();
@@ -21,21 +35,22 @@ const page = () => {
 
   const { id } = params as { id: string };
 
-  const [product, setProduct] = useState<ProductSchema | null>(null);
+  const [product, setProduct] = useState<ProductType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [placeOffer, setPlaceOffer] = useState<boolean>(false);
   const [hasMadeOffer, setHasMadeOffer] = useState<boolean>(false);
   const [offerPrice, setOfferPrice] = useState<number>(0);
+  const [offers, setOffers] = useState<OfferType[]>(product?.offers || []);
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<z.infer<typeof OfferSchema>>({
-    resolver: zodResolver(OfferSchema),
+  } = useForm<z.infer<typeof MakeOfferSchema>>({
+    resolver: zodResolver(MakeOfferSchema),
   });
 
-  const onSubmit: SubmitHandler<z.infer<typeof OfferSchema>> = async (
+  const onSubmit: SubmitHandler<z.infer<typeof MakeOfferSchema>> = async (
     formData
   ) => {
     try {
@@ -61,18 +76,18 @@ const page = () => {
 
       try {
         console.log("session, ", session);
-        const [productRes, offersRes] = await Promise.all([
-          axios.get(`/api/products/${id}`),
-          axios.get(
-            `/api/offers?productId=${id}&buyerId=${session?.user?._id}`
-          ),
-        ]);
+        const productRes = await axios.get(`/api/products/${id}`);
 
         setProduct(productRes.data);
-        if (offersRes.data.length > 0) {
-          setHasMadeOffer(true);
-          setOfferPrice(offersRes.data[0].price);
-        }
+        setOffers(productRes.data.offers);
+        console.log("productRes.data");
+        console.log(productRes.data);
+        // console.log("offersRes.data");
+        // console.log(offersRes.data);
+        // if (offersRes.data.length > 0) {
+        //   setHasMadeOffer(true);
+        //   setOfferPrice(offersRes.data[0].price);
+        // }
       } catch (error: any) {
         console.log(error);
         toast.error(error.response?.data);
@@ -125,48 +140,100 @@ const page = () => {
           <div className="mt-4">
             <h5 className="font-bold">Description</h5>
             <p>{product.desc}</p>
-            { session?.user.role === 'user' ? (hasMadeOffer ? (
-              <div>
-                <p className="text-sm text-gray-500 mt-4">
-                  You have already made an offer for this product.
-                </p>
-                <p className="text-lg font-semibold text-gray-800">
-                  Your Offer Price:{" "}
-                  <span className="text-green-600">N{offerPrice}</span>
-                </p>
-              </div>
-            ) : placeOffer ? (
-              <div className="mt-4">
-                <form method="post" onSubmit={handleSubmit(onSubmit)}>
-                  <label>
-                    <span className="text-gray-700 text-sm font-medium">
-                      Offer Price <span className="text-red-900">*</span>
-                    </span>
-                  </label>
-                  <Input {...register("offerPrice")} type="number" />
-                  <Button
-                    className="mt-4 w-full cursor-pointer"
-                    type="submit"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? "Loading..." : "Submit Offer"}
-                  </Button>
-                  {errors.offerPrice && (
-                    <span className="error_span">
-                      {errors.offerPrice.message}
-                    </span>
-                  )}
-                </form>
-              </div>
+            {session?.user.role === "user" ? (
+              hasMadeOffer ? (
+                <div>
+                  <p className="text-sm text-gray-500 mt-4">
+                    You have already made an offer for this product.
+                  </p>
+                  <p className="text-lg font-semibold text-gray-800">
+                    Your Offer Price:{" "}
+                    <span className="text-green-600">N{offerPrice}</span>
+                  </p>
+                </div>
+              ) : placeOffer ? (
+                <div className="mt-4">
+                  <form method="post" onSubmit={handleSubmit(onSubmit)}>
+                    <label>
+                      <span className="text-gray-700 text-sm font-medium">
+                        Offer Price <span className="text-red-900">*</span>
+                      </span>
+                    </label>
+                    <Input {...register("offerPrice")} type="number" />
+                    <Button
+                      className="mt-4 w-full cursor-pointer"
+                      type="submit"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Loading..." : "Submit Offer"}
+                    </Button>
+                    {errors.offerPrice && (
+                      <span className="error_span">
+                        {errors.offerPrice.message}
+                      </span>
+                    )}
+                  </form>
+                </div>
+              ) : (
+                <Button
+                  className="mt-4 w-full cursor-pointer"
+                  onClick={() => setPlaceOffer(true)}
+                >
+                  Make Offer
+                </Button>
+              )
             ) : (
-              <Button
-                className="mt-4 w-full cursor-pointer"
-                onClick={() => setPlaceOffer(true)}
-              >
-                Make Offer
-              </Button>
-            )) : (
-              <Button className="mt-4 cursor-pointer">View Offers on Product</Button>
+              // <Button className="mt-4 cursor-pointer">View Offers on Product</Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button className="mt-4 cursor-pointer">
+                    View Offers on Product
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Offers made to Product</DialogTitle>
+                    <DialogDescription>
+                      Total Offers: {product.offers.length}
+                    </DialogDescription>
+                  </DialogHeader>
+                  <ScrollArea className="h-60">
+                    {offers.length > 0 ? (
+                      offers.map((offer) => (
+                        <div key={offer._id} className="border-b py-2 flex justify-between items-center">
+                          <div className="mt-2 flex flex-col gap-2">
+                            <p className="font-medium">{offer.buyer.name}</p>
+                            <p className="text-sm text-gray-500">
+                              Offered{" "}
+                              <span className="font-semibold">
+                                ₦{offer.price}
+                              </span>{" "}
+                              {/* for {product.name} */}
+                            </p>
+                          </div>
+                          <div className="mt-2 mr-2 flex gap-2">
+                            <Button
+                              className="cursor-pointer bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600" 
+                            >
+                              <Check />
+                            </Button>
+                            <Button
+                              className="cursor-pointer bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
+                            >
+                              <X />
+                            </Button>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-gray-500">No offers yet.</p>
+                    )}
+                  </ScrollArea>
+                  <DialogFooter>
+                    <Button type="button">Close</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             )}
           </div>
         </div>

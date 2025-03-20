@@ -1,4 +1,4 @@
-export interface ProductSchema {
+export interface ProductType {
     _id: string;
     name: string;
     price: number;
@@ -7,4 +7,19 @@ export interface ProductSchema {
     desc: string;
     dealAccepted?: boolean;
     dealPrice?: number;
+    offers: OfferType[];
+}
+
+export interface OfferType {
+    _id: string;
+    product: string;
+    price: number;
+    status: string;
+    buyer: UserType;
+}
+
+interface UserType {
+    _id: string;
+    name: string;
+    email: string;
 }

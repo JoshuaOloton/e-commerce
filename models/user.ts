@@ -8,36 +8,42 @@ interface IUser extends Document {
   image: string;
   language: string;
   role: string;
+  offers: Schema.Types.ObjectId[];
 }
 
-const userSchema = new Schema<IUser>({
-  name: {
-    type: String,
-    unique: [true, "name already exists"],
-    required: [true, "please provide a name"],
+const userSchema = new Schema<IUser>(
+  {
+    name: {
+      type: String,
+      unique: [true, "name already exists"],
+      required: [true, "please provide a name"],
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: String,
+    },
+    language: {
+      type: String,
+      default: "en",
+    },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+    },
+
+    offers: [{ type: Schema.Types.ObjectId, ref: "Offer" }],
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  image: {
-    type: String,
-  },
-  language: {
-    type: String,
-    default: "en",
-  },
-  role: {
-    type: String,
-    enum: ["user", "admin"],
-    default: "user",
-  }
-});
+  { timestamps: true }
+);
 
 // // Hash password before saving
 // userSchema
@@ -48,7 +54,6 @@ const userSchema = new Schema<IUser>({
 //     }
 //     next();
 //   });
-
 
 const User = mongoose.models.User || mongoose.model<IUser>("User", userSchema);
 

@@ -32,6 +32,6 @@ export const RegisterSchema = z
 
 export type RegisterFormFields = z.infer<typeof RegisterSchema>;
 
-export const OfferSchema = z.object({
+export const MakeOfferSchema = z.object({
   offerPrice: z.coerce.number({ invalid_type_error: "Amount must be a number" }).min(1000),
 });

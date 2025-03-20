@@ -9,7 +9,7 @@ const page = () => {
   console.log(status);
 
   return (
-    <div className="border border-black">
+    <div>
       {/* Main Content */}
       {/* Main Content */}
       <div className="max-w-6xl mx-auto py-12 px-6">

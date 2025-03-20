@@ -14,7 +14,14 @@ export const GET = async(request: Request, { params } : { params: Promise<{ id: 
       return new Response("Invalid product ID.", { status: 400 });
     }
   
-    const product = await Product.findById(id);
+    const product = await Product.findById(id).populate({
+      path: "offers",
+      populate: {
+        path: "buyer",
+        select: "name email",
+      }
+    });
+    
     if (!product) {
       return new Response("Product not found.", { status: 404 });
     }
