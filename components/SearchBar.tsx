@@ -14,7 +14,7 @@ const SearchBar = () => {
   return (
     <div className="relative w-full max-w-md mb-8">
       <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" />
-      <input
+      <Input
         type="text"
         value={query}
         onChange={handleChange}

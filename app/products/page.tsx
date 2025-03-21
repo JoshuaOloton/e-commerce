@@ -1,32 +1,27 @@
 "use client";
 
-import axios from "axios";
 import { addFilter } from "@/lib/slices/slice";
-import ProductCard from "@/components/ProductCard";
-import { ProductSchema } from "@/types";
+import { AxiosError } from "axios";
+import { ProductType } from "@/types";
 import { Square, SquareCheck } from "lucide-react";
 import type { RootState } from "../../lib/store";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import ProductCard from "@/components/ProductCard";
 import SearchBar from "@/components/SearchBar";
 
-const page = () => {
+const Products = () => {
   const dispatch = useDispatch();
   const filters = useSelector(
     (state: RootState) => state.filters.selectedFilters
   );
 
-  const [query, setQuery] = useState("");
-
-  const [products, setProducts] = useState<ProductSchema[]>([]);
-  const [filteredProducts, setfilteredProducts] = useState<ProductSchema[]>([]);
+  const [products, setProducts] = useState<ProductType[]>([]);
+  const [filteredProducts, setfilteredProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
-  const handleSearch = () => {
-    
-  } 
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -37,9 +32,14 @@ const page = () => {
         if (response.status === 200) 
             setProducts(response.data);
 
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.log(error);
-        toast.error(`Error fetching products: ${error.response?.data}`);
+
+        if (error instanceof AxiosError && error.response) {
+          toast.error(error.response.data);
+        } else {
+          toast.error("Error fetching products");
+        }
       } finally {
         setLoading(false);
       }
@@ -162,4 +162,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Products;

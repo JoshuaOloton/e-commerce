@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import Link from "next/link";
+import { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RegisterSchema, RegisterFormFields } from "@/schemas";
@@ -12,9 +13,9 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-export default function page() {
+export default function Register() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
   const {
     register,
@@ -34,9 +35,14 @@ export default function page() {
 
         router.push("/login");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.log(error);
-      toast.error(error.response.data);
+
+      if (error instanceof AxiosError && error.response) {
+        toast.error(error.response.data);
+      } else {
+        toast.error("An error occurred. Please try again.");
+      }
     }
   };
 
@@ -45,7 +51,7 @@ export default function page() {
         toast.info("You are already logged in.");
         router.replace("/");
       }
-    }, []);
+    }, [status, router]);
 
   return (
     <section>

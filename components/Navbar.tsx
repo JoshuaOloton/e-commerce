@@ -8,10 +8,10 @@ import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import { toast } from "sonner";
 import { User } from "lucide-react";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);

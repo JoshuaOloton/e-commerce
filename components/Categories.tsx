@@ -4,7 +4,7 @@ import CategoryCard from "./CategoryCard";
 import { ArrowRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { categories } from "@/app/data";
-import { Ref, use } from "react";
+import { Ref } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { clearFilters } from "@/lib/slices/slice";

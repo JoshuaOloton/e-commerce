@@ -1,21 +1,18 @@
 "use client";
 
-import Image from "next/image";
-import axios from "axios";
+import { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
+import { Check, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ProductType, OfferType } from "@/types";
 import { MakeOfferSchema } from "@/schemas";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useSession } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod";
-
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Check, X } from "lucide-react";
 
 import {
   Dialog,
@@ -26,9 +23,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 
-const page = () => {
+import axios from "axios";
+import Image from "next/image";
+import z from "zod";
+
+
+const SingleProduct = () => {
   const params = useParams();
   const router = useRouter();
   const { data: session } = useSession();
@@ -64,9 +65,15 @@ const page = () => {
         toast.success("Offer submitted successfully");
         router.push("/products");
       }
-    } catch (error: any) {
+
+    } catch (error: unknown) {
       console.log(error);
-      toast.error(error.response.data);
+
+      if (error instanceof AxiosError && error.response) {
+        toast.error(error.response.data);
+      } else {
+        toast.error("An error occurred while submitting offer");
+      }
     }
   };
 
@@ -82,22 +89,34 @@ const page = () => {
         setOffers(productRes.data.offers);
         console.log("productRes.data");
         console.log(productRes.data);
+
+        if (productRes.data.offers.length > 0) {
+          setHasMadeOffer(true);
+          setOfferPrice(productRes.data.offers[0].price);
+        }
+
         // console.log("offersRes.data");
         // console.log(offersRes.data);
         // if (offersRes.data.length > 0) {
         //   setHasMadeOffer(true);
         //   setOfferPrice(offersRes.data[0].price);
         // }
-      } catch (error: any) {
+
+      } catch (error: unknown) {
         console.log(error);
-        toast.error(error.response?.data);
+
+        if (error instanceof AxiosError && error.response) {
+          toast.error(error.response?.data);
+        } else {
+          toast.error("An error occurred while fetching product");
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchProductandOffer();
-  }, [id, session?.user?._id]);
+  }, [id, session]);
 
   if (loading)
     return (
@@ -242,4 +261,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default SingleProduct;

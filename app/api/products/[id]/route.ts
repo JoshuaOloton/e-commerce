@@ -1,6 +1,7 @@
+import { AxiosError } from "axios";
 import { connectDB } from "@/utils/db";
-import Product from "@/models/product";
 import mongoose from "mongoose";
+import Product from "@/models/product";
 
 
 export const GET = async(request: Request, { params } : { params: Promise<{ id: string }> }) => {
@@ -27,7 +28,11 @@ export const GET = async(request: Request, { params } : { params: Promise<{ id: 
     }
     
     return Response.json(product, { status: 200 });
-  } catch (error: any) {
-    return new Response(error.message || "An error occurred while fetching product.", { status: 500 });
+
+  } catch (error: unknown) {
+    if (error instanceof AxiosError && error.response) {
+      return new Response(error.response.data, { status: error.response.status });
+    }
+    return new Response("An error occurred while fetching product.", { status: 500 });
   }
 }

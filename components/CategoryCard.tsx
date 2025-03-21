@@ -4,6 +4,7 @@ import { addSingleFilter } from "@/lib/slices/slice";
 import { Button } from "./ui/button";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const CategoryCard = ({ name, image }: { name: string; image: string }) => {
   const dispatch = useDispatch();
@@ -18,11 +19,19 @@ const CategoryCard = ({ name, image }: { name: string; image: string }) => {
       }}
     >
       <div className="w-4/5 mx-auto flex flex-col gap-4">
-        <img
+        {/* <img
           src={image}
           alt={name}
           className="rounded-sm transition-all duration-700 group-hover:scale-105"
-        />
+        /> */}
+        <div className="w-52 h-52 mx-auto relative">
+          <Image
+            src={image}
+            alt={name}
+            fill={true}
+            className="object-cover rounded-sm transition-all duration-700 group-hover:scale-105"
+          />
+        </div>
         <Button
           variant={"ghost"}
           className="text-base transition-all group-hover:scale-95 duration-700 cursor-pointer"

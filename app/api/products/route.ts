@@ -1,5 +1,6 @@
-import { connectDB } from "@/utils/db";
 import Product from "@/models/product";
+import { AxiosError } from "axios";
+import { connectDB } from "@/utils/db";
 
 export const GET = async() => {
   try {
@@ -8,7 +9,10 @@ export const GET = async() => {
     const products = await Product.find();
     return new Response(JSON.stringify(products), { status: 200 });
     
-  } catch (error: any) {
-    return new Response(error.message || "An error occurred while fetching the products.", { status: 500 });
+  } catch (error: unknown) {
+    if (error instanceof AxiosError && error.response) {
+      return new Response(error.response.data, { status: error.response.status });
+    }
+    return new Response("An error occurred while fetching the products.", { status: 500 });
   }
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,10 +12,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-export default function page() {
+export default function Login() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { data : session, status} = useSession();
+  const { status} = useSession();
 
   const hasShownToast = useRef(false); // to prevent multiple toasts
 
@@ -51,7 +50,7 @@ export default function page() {
       toast.info("You are already logged in.");
       router.replace("/");
     }
-  }, []);
+  }, [status, router]);
 
   useEffect(() => {
     const errorMessage = searchParams.get("auth");
@@ -100,7 +99,7 @@ export default function page() {
               </Button>
             </form>
             <p className="">
-              Don't have an account?{" "}
+              Don&rsquo;t have an account?{" "}
               <Link href="/register" className="text-blue-500">
                 Register
               </Link>

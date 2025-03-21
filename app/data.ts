@@ -1,5 +1,3 @@
-import { ProductSchema } from "@/types";
-
 export const categories = [
   { id: 1, name: "Cars", image: "/assets/images/cars.jpg" },
   { id: 2, name: "Suits", image: "/assets/images/suits.jpg" },

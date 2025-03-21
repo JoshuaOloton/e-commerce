@@ -1,11 +1,9 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import User from "@/models/user";
 import { connectDB } from "@/utils/db";
+import { DefaultUser } from "next-auth";
 import { LoginSchema } from "@/schemas";
 import type { NextAuthOptions } from "next-auth";
-import { Session } from "next-auth";
-import { DefaultJWT } from "next-auth/jwt";
-import { DefaultUser } from "next-auth";
 
 
 
@@ -68,8 +66,7 @@ export const options: NextAuthOptions = {
           console.log("User => ", user);
 
           return user;
-        } catch (error: any) {
-          // throw new Error(error.message || "An error occurred while authenticating");
+        } catch {
           return null;
         }
       },

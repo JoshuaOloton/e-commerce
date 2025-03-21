@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 
-const page = () => {
+const Home = () => {
   const { data: session, status } = useSession();
   console.log(session);
   console.log(status);
@@ -86,4 +86,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Home

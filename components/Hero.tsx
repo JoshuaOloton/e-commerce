@@ -1,8 +1,7 @@
 "use client";
 
-import { jost, merriweather } from "@/app/fonts";
+import { merriweather } from "@/app/fonts";
 import { Button } from "./ui/button";
-import Link from "next/link";
 
 const Hero = ({ scrollToSection }: { scrollToSection: () => void }) => {
   return (
