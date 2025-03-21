@@ -17,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
   DialogContent,
+  DialogClose,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -90,11 +91,6 @@ const SingleProduct = () => {
         console.log("productRes.data");
         console.log(productRes.data);
 
-        if (productRes.data.offers.length > 0) {
-          setHasMadeOffer(true);
-          setOfferPrice(productRes.data.offers[0].price);
-        }
-
         // console.log("offersRes.data");
         // console.log(offersRes.data);
         // if (offersRes.data.length > 0) {
@@ -117,6 +113,24 @@ const SingleProduct = () => {
 
     fetchProductandOffer();
   }, [id, session]);
+
+  useEffect(() => {
+    if (!session || !product) return;
+
+    if (session.user.role === "user") {
+      const offer = product.offers.find(
+        (offer) => offer.buyer._id === session.user._id
+      );
+
+      if (offer) {
+        setHasMadeOffer(true);
+        setOfferPrice(offer.price);
+      }
+    } else { // if ADMIN or SELLER
+      setOffers(product.offers);
+    }
+
+  }, [product]);
 
   if (loading)
     return (
@@ -249,7 +263,9 @@ const SingleProduct = () => {
                     )}
                   </ScrollArea>
                   <DialogFooter>
-                    <Button type="button">Close</Button>
+                    <DialogClose asChild>
+                      <Button type="button" variant={"secondary"}>Close</Button>
+                    </DialogClose>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>

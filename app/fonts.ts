@@ -1,9 +1,10 @@
 import {
+  Bowlby_One_SC,
+  Cinzel,
   Jost,
   Merriweather,
   Merriweather_Sans,
-  Space_Grotesk,
-  Bowlby_One_SC
+  Space_Grotesk
 } from "next/font/google";
 
 export const jost = Jost({
@@ -33,4 +34,11 @@ export const bowlbyOneSC = Bowlby_One_SC({
   variable: "--font-bowlby-one-sc",
   subsets: ["latin"],
   weight: ["400"],
+});
+
+
+export const cinzel = Cinzel({
+  variable: "--font-cinzel",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
 });

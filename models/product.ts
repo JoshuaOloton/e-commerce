@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
+import Offer from "./offer";
 
 interface IProduct extends Document {
   name: string;
@@ -25,7 +26,7 @@ const ProductSchema = new Schema<IProduct>(
       index: true,
     },
     dealPrice: { type: Number, required: false },
-    offers: [{ type: Schema.Types.ObjectId, ref: "Offer"}],
+    offers: [{ type: Schema.Types.ObjectId, ref: Offer}],
   },
   { timestamps: true }
 );

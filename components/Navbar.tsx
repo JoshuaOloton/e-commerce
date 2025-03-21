@@ -28,8 +28,8 @@ const Navbar = () => {
   return (
     <header>
       <div className="flex justify-between items-center px-4 relative border border-gray-400 font-jost">
-        <div className="logo font-bold tracking-wider">
-          <Link href={"/"}>NavLogo</Link>
+        <div className="logo font-bold tracking-wider uppercase">
+          <Link href={"/"}>Daniel&rsquo;s Empire</Link>
         </div>
 
         {/* Mobile Nav */}

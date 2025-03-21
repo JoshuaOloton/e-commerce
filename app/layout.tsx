@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { jost, merriweather, merriweatherSans, spaceGrotesk, bowlbyOneSC } from "./fonts";
+import { jost, cinzel, merriweather, merriweatherSans, spaceGrotesk, bowlbyOneSC } from "./fonts";
 import LayoutWrapper from "./LayoutWrapper";
 
 export const metadata: Metadata = {
@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${jost.variable} ${merriweather.variable} ${merriweatherSans.variable} ${spaceGrotesk.variable} ${bowlbyOneSC.variable} antialiased`}
+        className={`${jost.variable} ${merriweather.variable} ${merriweatherSans.variable} ${spaceGrotesk.variable} ${bowlbyOneSC.variable} ${cinzel.variable} antialiased`}
         suppressHydrationWarning
       >
         <LayoutWrapper>{children}</LayoutWrapper>
