@@ -30,6 +30,7 @@ export const GET = async(request: Request, { params } : { params: Promise<{ id: 
     return Response.json(product, { status: 200 });
 
   } catch (error: unknown) {
+    console.log('API error: ', error);
     if (error instanceof AxiosError && error.response) {
       return new Response(error.response.data, { status: error.response.status });
     }

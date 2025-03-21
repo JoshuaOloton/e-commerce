@@ -47,7 +47,7 @@ const Navbar = () => {
                 <Link href="/" className="font-medium hover:animate-pulse">Home</Link>
               </li>
               <li>
-                <Link href="/shop" className="font-medium hover:animate-pulse">Shop</Link>
+                <Link href="/products" className="font-medium hover:animate-pulse">Shop</Link>
               </li>
               {session ? (
                 <>
@@ -75,7 +75,7 @@ const Navbar = () => {
             <Link href="/" className="transition-all duration-300 hover:text-gray-600">Home</Link>
           </li>
           <li>
-            <Link href="/shop" className="transition-all duration-300 hover:text-gray-600">Shop</Link>
+            <Link href="/products" className="transition-all duration-300 hover:text-gray-600">Shop</Link>
           </li>
           {session ? (
             <>

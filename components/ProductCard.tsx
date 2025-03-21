@@ -30,7 +30,7 @@ const ProductCard = ({
             className="object-cover rounded-sm transition-all duration-700 group-hover:scale-105"
           />
         </div>
-        <div className="">
+        <div>
           <h3 className="font-bold lg:text-lg mb-3">{name}</h3>
           <p className="text-sm leading-6 tracking-wide mb-2">
             {desc.slice(0, 40)}...
