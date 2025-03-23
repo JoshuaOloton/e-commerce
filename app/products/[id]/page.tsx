@@ -2,7 +2,6 @@
 
 import { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
-import { Check, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ProductType, OfferType } from "@/types";
 import { MakeOfferSchema } from "@/schemas";
@@ -28,6 +27,8 @@ import {
 import axios from "axios";
 import Image from "next/image";
 import z from "zod";
+import { ProductSkeleton } from "@/components/LoadingSkeleton";
+import OfferCard from "@/components/OfferCard";
 
 
 const SingleProduct = () => {
@@ -42,7 +43,7 @@ const SingleProduct = () => {
   const [placeOffer, setPlaceOffer] = useState<boolean>(false);
   const [hasMadeOffer, setHasMadeOffer] = useState<boolean>(false);
   const [offerPrice, setOfferPrice] = useState<number>(0);
-  const [offers, setOffers] = useState<OfferType[]>(product?.offers || []);
+  const [offers, setOffers] = useState<OfferType[]>([]);
 
   const {
     register,
@@ -51,6 +52,8 @@ const SingleProduct = () => {
   } = useForm<z.infer<typeof MakeOfferSchema>>({
     resolver: zodResolver(MakeOfferSchema),
   });
+
+  const updateOffers = (offers: OfferType[]) => setOffers(offers);
 
   const onSubmit: SubmitHandler<z.infer<typeof MakeOfferSchema>> = async (
     formData
@@ -83,20 +86,10 @@ const SingleProduct = () => {
       if (!session) return;
 
       try {
-        console.log("session, ", session);
         const productRes = await axios.get(`/api/products/${id}`);
 
         setProduct(productRes.data);
         setOffers(productRes.data.offers);
-        console.log("productRes.data");
-        console.log(productRes.data);
-
-        // console.log("offersRes.data");
-        // console.log(offersRes.data);
-        // if (offersRes.data.length > 0) {
-        //   setHasMadeOffer(true);
-        //   setOfferPrice(offersRes.data[0].price);
-        // }
 
       } catch (error: unknown) {
         console.log(error);
@@ -122,6 +115,7 @@ const SingleProduct = () => {
         (offer) => offer.buyer._id === session.user._id
       );
 
+      setOffers(offer ? [offer] : []);
       if (offer) {
         setHasMadeOffer(true);
         setOfferPrice(offer.price);
@@ -132,22 +126,54 @@ const SingleProduct = () => {
 
   }, [product]);
 
+  // useEffect(() => {
+  //   console.log("Offers status => ", offers.map(offer => offer.status));
+  // }, [offers]);
+
+  const showOfferStatus = (status: string) => {
+    switch(status) {
+      case "pending":
+        return (
+          <div>
+              <p className="text-sm text-gray-500 mt-4">
+                You have already made an offer for this product.
+              </p>
+              <p className="text-lg font-semibold text-gray-800">
+                Your Offer Price:{" "}
+                <span className="text-green-600">N{offers[0].price}</span>
+              </p>
+            </div>
+        );
+      case "accepted":
+        return (
+          <div>
+            <p className="text-sm text-gray-500 mt-4">
+              Your offer has been accepted.
+            </p>
+            <p className="text-lg font-semibold text-green-600">
+              Your Offer Price:{" "}
+              <span className="text-green-600">N{offers[0].price}</span>
+            </p>
+          </div>
+        );
+      case "rejected":
+        return (
+          <div>
+            <p className="text-sm text-gray-500 mt-4">
+              Your offer has been accepted.
+            </p>
+            <p className="text-lg font-semibold text-green-600">
+              Your Offer Price:{" "}
+              <span className="text-green-600">N{offers[0].price}</span>
+            </p>
+          </div>
+        )
+    }
+  }
+
   if (loading)
     return (
-      <div className="w-full flex flex-col items-center justify-center my-10">
-        <div className="p-4 w-3/4 sm:w-5/6 max-w-5xl  flex flex-col sm:flex-row gap-1 md:gap-6">
-          <div className="bg-gray-100 flex-1/2 p-4 rounded">
-            <div className="animate-pulse bg-gray-300 w-full h-96 rounded"></div>
-          </div>
-          <div className="my-8 flex-1/2">
-            <div className="animate-pulse bg-gray-300 w-3/4 h-6 mb-2 rounded"></div>
-            <div className="animate-pulse bg-gray-300 w-1/2 h-6 mb-2 rounded"></div>
-            <div className="animate-pulse bg-gray-300 w-3/4 h-6 mb-2 rounded"></div>
-            <div className="animate-pulse bg-gray-300 w-3/4 h-6 mb-2 rounded"></div>
-            <div className="animate-pulse bg-gray-300 w-3/4 h-6 mb-2 rounded"></div>
-          </div>
-        </div>
-      </div>
+      <ProductSkeleton />
     );
 
   if (!product) return <p>Product not found</p>;
@@ -174,16 +200,8 @@ const SingleProduct = () => {
             <h5 className="font-bold">Description</h5>
             <p>{product.desc}</p>
             {session?.user.role === "user" ? (
-              hasMadeOffer ? (
-                <div>
-                  <p className="text-sm text-gray-500 mt-4">
-                    You have already made an offer for this product.
-                  </p>
-                  <p className="text-lg font-semibold text-gray-800">
-                    Your Offer Price:{" "}
-                    <span className="text-green-600">N{offerPrice}</span>
-                  </p>
-                </div>
+              offers.length > 0 ? (
+                showOfferStatus(offers[0].status)
               ) : placeOffer ? (
                 <div className="mt-4">
                   <form method="post" onSubmit={handleSubmit(onSubmit)}>
@@ -233,30 +251,7 @@ const SingleProduct = () => {
                   <ScrollArea className="h-60">
                     {offers.length > 0 ? (
                       offers.map((offer) => (
-                        <div key={offer._id} className="border-b py-2 flex justify-between items-center">
-                          <div className="mt-2 flex flex-col gap-2">
-                            <p className="font-medium">{offer.buyer.name}</p>
-                            <p className="text-sm text-gray-500">
-                              Offered{" "}
-                              <span className="font-semibold">
-                                ₦{offer.price}
-                              </span>{" "}
-                              {/* for {product.name} */}
-                            </p>
-                          </div>
-                          <div className="mt-2 mr-2 flex gap-2">
-                            <Button
-                              className="cursor-pointer bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600" 
-                            >
-                              <Check />
-                            </Button>
-                            <Button
-                              className="cursor-pointer bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
-                            >
-                              <X />
-                            </Button>
-                          </div>
-                        </div>
+                        <OfferCard key={offer._id} offer={offer} updateOffers={updateOffers} offers={offers} />
                       ))
                     ) : (
                       <p className="text-gray-500">No offers yet.</p>

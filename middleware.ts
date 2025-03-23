@@ -15,6 +15,9 @@ export async function middleware(req: NextRequestWithAuth) {
   }
 
   if (pathname === "/" && token?.role === "admin") {
+    console.log('Redirecting to /home');
+    console.log(token);
+    console.log(token.role);
     return NextResponse.redirect(new URL("/home", req.nextUrl));
   }
 

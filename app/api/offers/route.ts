@@ -38,12 +38,15 @@ export const POST = async (request: Request) => {
     // });
 
     return new Response(JSON.stringify(offer), { status: 201 });
-
   } catch (error: unknown) {
     if (error instanceof AxiosError && error.response) {
-      return new Response(error.response.data, {status: error.response.status});
+      return new Response(error.response.data, {
+        status: error.response.status,
+      });
     } else {
-      return new Response("An error occurred while creating the offer", { status: 500 });
+      return new Response("An error occurred while creating the offer", {
+        status: 500,
+      });
     }
   }
 };
@@ -80,10 +83,11 @@ export const GET = async (request: NextRequest) => {
     offers.sort((a, b) => b.createdAt - a.createdAt);
 
     return Response.json(offers, { status: 200 });
-
   } catch (error: unknown) {
     if (error instanceof AxiosError && error.response) {
-      return new Response(error.response.data, {status: error.response.status,});
+      return new Response(error.response.data, {
+        status: error.response.status,
+      });
     }
     return new Response("An error occurred while fetching offers.", {
       status: 500,

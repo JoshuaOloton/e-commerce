@@ -5,12 +5,12 @@ import { AxiosError } from "axios";
 import { ProductType } from "@/types";
 import { Square, SquareCheck } from "lucide-react";
 import type { RootState } from "../../lib/store";
-import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ProductCard from "@/components/ProductCard";
+import { ProductsSkeleton } from "@/components/LoadingSkeleton";
 import SearchBar from "@/components/SearchBar";
 
 const Products = () => {
@@ -126,17 +126,7 @@ const Products = () => {
           </div>
           <div className="">
             {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <Skeleton className="h-40 w-full" />
-                <Skeleton className="h-40 w-full" />
-                <Skeleton className="h-40 w-full" />
-                <Skeleton className="h-40 w-full" />
-                <Skeleton className="h-40 w-full" />
-                <Skeleton className="h-40 w-full" />
-                <Skeleton className="h-40 w-full" />
-                <Skeleton className="h-40 w-full" />
-                <Skeleton className="h-40 w-full" />
-              </div>
+              <ProductsSkeleton />
             ) : (
               <>
                 <SearchBar />
