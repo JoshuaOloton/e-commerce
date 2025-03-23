@@ -1,7 +1,6 @@
 import { AxiosError } from "axios";
 import { connectDB } from "@/utils/db";
 import mongoose from "mongoose";
-import Offer from "@/models/offer";
 import Product from "@/models/product";
 
 

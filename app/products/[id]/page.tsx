@@ -41,8 +41,6 @@ const SingleProduct = () => {
   const [product, setProduct] = useState<ProductType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [placeOffer, setPlaceOffer] = useState<boolean>(false);
-  const [hasMadeOffer, setHasMadeOffer] = useState<boolean>(false);
-  const [offerPrice, setOfferPrice] = useState<number>(0);
   const [offers, setOffers] = useState<OfferType[]>([]);
 
   const {
@@ -116,15 +114,11 @@ const SingleProduct = () => {
       );
 
       setOffers(offer ? [offer] : []);
-      if (offer) {
-        setHasMadeOffer(true);
-        setOfferPrice(offer.price);
-      }
     } else { // if ADMIN or SELLER
       setOffers(product.offers);
     }
 
-  }, [product]);
+  }, [product, session]);
 
   // useEffect(() => {
   //   console.log("Offers status => ", offers.map(offer => offer.status));

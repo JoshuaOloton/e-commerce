@@ -63,7 +63,6 @@ export const options: NextAuthOptions = {
             // throw new Error("Incorrect credentials provided"); 
             return null;
           }
-          console.log("User => ", user);
 
           return user;
         } catch {

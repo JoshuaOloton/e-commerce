@@ -1,7 +1,7 @@
 import axios from "axios";
 import { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
-import { Check, X, XCircle, CheckCircle, Ban } from "lucide-react";
+import { Check, X, XCircle, CheckCircle } from "lucide-react";
 import { OfferType } from "@/types";
 import { toast } from "sonner";
 import { useState } from "react";
