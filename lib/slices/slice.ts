@@ -14,7 +14,7 @@ const filterSlice = createSlice({
   reducers: {
     addFilter: (state, action: PayloadAction<string>) => {
       if (state.selectedFilters.includes(action.payload)) {
-        state.selectedFilters.splice(state.selectedFilters.indexOf(action.payload), 1);
+        state.selectedFilters.splice(state.selectedFilters.indexOf(action.payload), 1); // toggle if exists
         return;
       }
       state.selectedFilters.push(action.payload);

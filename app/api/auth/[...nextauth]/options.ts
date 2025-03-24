@@ -1,10 +1,10 @@
+import bcrypt from "bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
 import User from "@/models/user";
 import { connectDB } from "@/utils/db";
 import { DefaultUser } from "next-auth";
 import { LoginSchema } from "@/schemas";
 import type { NextAuthOptions } from "next-auth";
-
 
 
 declare module "next-auth" {
@@ -56,11 +56,15 @@ export const options: NextAuthOptions = {
           const { email, password } = validatedCredentials.data;
 
           const user = await User.findOne({
-            email,
-            password: password,
+            email
           });
           if (!user) {
             // throw new Error("Incorrect credentials provided"); 
+            return null;
+          }
+
+          const isPasswordValid = await bcrypt.compare(password, user.password);
+          if (!isPasswordValid) {
             return null;
           }
 
