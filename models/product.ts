@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
-import Offer from "./offer";
+import Offer from "./Offer";
 
 interface IProduct extends Document {
   name: string;

@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
-import User from "@/models/user";
+import User from "@/models/User";
 import { connectDB } from "@/utils/db";
 import { DefaultUser } from "next-auth";
 import { LoginSchema } from "@/schemas";
@@ -56,7 +56,7 @@ export const options: NextAuthOptions = {
           const { email, password } = validatedCredentials.data;
 
           const user = await User.findOne({
-            email
+            email: { $regex: new RegExp(`^${email}$`, "i") } // case insensitive email search
           });
           if (!user) {
             // throw new Error("Incorrect credentials provided"); 

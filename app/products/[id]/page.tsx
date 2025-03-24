@@ -174,7 +174,7 @@ const SingleProduct = () => {
 
   return (
     <div className="w-full flex flex-col items-center justify-center my-10">
-      <div className="p-4 w-3/4 sm:w-5/6 max-w-5xl  flex flex-col sm:flex-row gap-1 md:gap-6">
+      <div className="p-4 w-3/4 sm:w-5/6 max-w-5xl flex flex-col sm:flex-row gap-1 md:gap-6">
         <div className="bg-gray-100 flex-1/2 p-4 rounded">
           <Image
             src={product.image}

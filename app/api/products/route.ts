@@ -1,4 +1,4 @@
-import Product from "@/models/product";
+import Product from "@/models/Product";
 import { AxiosError } from "axios";
 import { connectDB } from "@/utils/db";
 

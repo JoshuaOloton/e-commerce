@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import { connectDB } from "@/utils/db";
-import User from "@/models/user";
+import User from "@/models/User";
 
 export const POST = async (req: Request) => {
   const { name, email, password } = await req.json();

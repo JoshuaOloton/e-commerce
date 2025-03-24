@@ -9,6 +9,7 @@ interface IUser extends Document {
   language: string;
   role: string;
   offers: Schema.Types.ObjectId[];
+  notifications: Schema.Types.ObjectId[];
 }
 
 const userSchema = new Schema<IUser>(
@@ -41,6 +42,7 @@ const userSchema = new Schema<IUser>(
     },
 
     offers: [{ type: Schema.Types.ObjectId, ref: "Offer" }],
+    notifications: [{ type: Schema.Types.ObjectId, ref: "UserNotification" }],
   },
   { timestamps: true }
 );

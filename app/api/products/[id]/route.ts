@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 import { connectDB } from "@/utils/db";
 import mongoose from "mongoose";
-import Product from "@/models/product";
+import Product from "@/models/Product";
 
 
 export const GET = async(request: Request, { params } : { params: Promise<{ id: string }> }) => {

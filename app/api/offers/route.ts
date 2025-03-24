@@ -1,12 +1,14 @@
 import { AxiosError } from "axios";
 import { connectDB } from "@/utils/db";
 import { type NextRequest } from "next/server";
+import AdminNotification from "@/models/AdminNotification";
 import mongoose from "mongoose";
-import Offer from "@/models/offer";
-import Product from "@/models/product";
-import User from "@/models/user";
+import Offer from "@/models/Offer";
+import Product from "@/models/Product";
+import User from "@/models/User";
+import { link } from "fs";
 
-// POST NEW OFFER : /api/offer
+// POST NEW OFFER : /api/offers
 // BODY : { buyerId: string, productId: string, offerPrice: number }
 export const POST = async (request: Request) => {
   try {
@@ -21,6 +23,8 @@ export const POST = async (request: Request) => {
       product: productId,
     });
     await offer.save();
+    await offer.populate("buyer");
+    await offer.populate("product");
 
     // Update product and user with new offer
     await Product.findByIdAndUpdate(productId, {
@@ -31,20 +35,24 @@ export const POST = async (request: Request) => {
       $push: { offers: offer._id },
     });
 
-    // update product with dealAccepted and dealPrice
-    // await Product.findByIdAndUpdate(productId, {
-    //   dealAccepted: true,
-    //   dealPrice: offerPrice,
-    // });
+    // Create a new admin notification
+    await AdminNotification.create({
+      title: offer.product.name,
+      message: `🎉 ${offer.buyer.name} has offered ${offerPrice}.`,
+      linkUrl: `/products/${productId}`,
+      // default read is false
+    });
 
     return new Response(JSON.stringify(offer), { status: 201 });
+
   } catch (error: unknown) {
+    
     if (error instanceof AxiosError && error.response) {
       return new Response(error.response.data, {
         status: error.response.status,
       });
     } else {
-      return new Response("An error occurred while creating the offer", {
+      return new Response(`An error occurred while creating the offer: ${String(error)}.`, {
         status: 500,
       });
     }
@@ -89,7 +97,7 @@ export const GET = async (request: NextRequest) => {
         status: error.response.status,
       });
     }
-    return new Response("An error occurred while fetching offers.", {
+    return new Response(`An error occurred while fetching offers: ${String(error)}`, {
       status: 500,
     });
   }
