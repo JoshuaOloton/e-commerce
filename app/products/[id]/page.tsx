@@ -29,6 +29,7 @@ import Image from "next/image";
 import z from "zod";
 import { ProductSkeleton } from "@/components/LoadingSkeleton";
 import OfferCard from "@/components/OfferCard";
+import AcceptedOfferDialog from "@/components/AcceptedOfferDialog";
 
 
 const SingleProduct = () => {
@@ -88,6 +89,7 @@ const SingleProduct = () => {
 
         setProduct(productRes.data);
         setOffers(productRes.data.offers);
+        console.log(productRes.data.offers);
 
       } catch (error: unknown) {
         console.log(error);
@@ -112,6 +114,7 @@ const SingleProduct = () => {
       const offer = product.offers.find(
         (offer) => offer.buyer._id === session.user._id
       );
+      console.log(offer);
 
       setOffers(offer ? [offer] : []);
     } else { // if ADMIN or SELLER
@@ -140,25 +143,28 @@ const SingleProduct = () => {
         );
       case "accepted":
         return (
-          <div>
-            <p className="text-sm text-gray-500 mt-4">
-              Your offer has been accepted.
-            </p>
-            <p className="text-lg font-semibold text-green-600">
-              Your Offer Price:{" "}
-              <span className="text-green-600">N{offers[0].price}</span>
-            </p>
+          <div className="my-4 p-4 border rounded-md bg-green-100 text-green-800">
+            <p className="font-semibold">Offer Accepted!</p>
+            <p className="text-sm">Contact the seller to arrange payment and delivery details.</p>
+            <div className="mt-2 flex gap-4">
+              <a href={`tel:234000000000`} className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                Call Seller
+              </a>
+              <button className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
+                Mark as Completed
+              </button>
+            </div>
           </div>
         );
       case "rejected":
         return (
           <div>
             <p className="text-sm text-gray-500 mt-4">
-              Your offer has been accepted.
+              ❌ Your offer has been rejected.
             </p>
-            <p className="text-lg font-semibold text-green-600">
+            <p className="text-lg font-semibold text-red-500">
               Your Offer Price:{" "}
-              <span className="text-green-600">N{offers[0].price}</span>
+              <span className="">N{offers[0].price}</span>
             </p>
           </div>
         )

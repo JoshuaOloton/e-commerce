@@ -23,3 +23,12 @@ interface UserType {
     name: string;
     email: string;
 }
+
+export interface NotificationType {
+    _id: string;
+    title: string;
+    message: string;
+    read: boolean;
+    linkUrl: string;
+    createdAt: string;
+}

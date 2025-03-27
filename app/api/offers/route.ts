@@ -6,7 +6,6 @@ import mongoose from "mongoose";
 import Offer from "@/models/Offer";
 import Product from "@/models/Product";
 import User from "@/models/User";
-import { link } from "fs";
 
 // POST NEW OFFER : /api/offers
 // BODY : { buyerId: string, productId: string, offerPrice: number }

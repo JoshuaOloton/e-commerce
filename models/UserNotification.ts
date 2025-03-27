@@ -6,6 +6,7 @@ interface IUserNotification extends Document {
   message: string;
   read: boolean;
   linkUrl: string;
+  user: Schema.Types.ObjectId;
 }
 
 const UserNotificationSchema = new Schema<IUserNotification>({
@@ -13,6 +14,7 @@ const UserNotificationSchema = new Schema<IUserNotification>({
   message: { type: String, required: true },
   read: { type: Boolean, default: false, index: true },
   linkUrl: { type: String, required: true },
+  user: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
 

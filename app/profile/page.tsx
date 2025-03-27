@@ -11,6 +11,7 @@ const Profile = () => {
       <h1>Profile</h1>
       <p>{session?.user.name}</p>
       <p>{session?.user.email}</p>
+      <p>{session?.user._id}</p>
     </div>
   )
 }

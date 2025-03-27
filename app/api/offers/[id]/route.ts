@@ -17,12 +17,12 @@ export const PATCH = async (request: Request, { params }: { params: Promise<{ id
       await connectDB();
   
       const offer = await Offer.findByIdAndUpdate(id, { status }, { new: true }).populate("product").populate("buyer");
-  
-      console.log("Offer => ", offer);
 
       if (!offer) {
         return new Response("Offer not found", { status: 404 });
       }
+
+      console.log('offer', offer);
 
       const messageEmoji = status === "accepted" ? "🎉" : "❌";
 
@@ -32,9 +32,10 @@ export const PATCH = async (request: Request, { params }: { params: Promise<{ id
         message: `${messageEmoji} Your offer has been ${status}`,
         // default read is false
         linkUrl: `/products/${offer.product._id}`,
+        user: offer.buyer,
       });
 
-      await User.findByIdAndUpdate(offer.buyer, {
+      await User.findByIdAndUpdate(offer.buyer._id, {
         $push: { notifications: offer._id },
       });
   
@@ -46,11 +47,13 @@ export const PATCH = async (request: Request, { params }: { params: Promise<{ id
         // );
 
         // Send notification to all other buyers and update all other offers for the product to rejected
-        const otherOffers = await Offer.find({ product: offer.product, _id: { $ne: offer._id } });
+        const otherOffers = await Offer.find({ product: offer.product, _id: { $ne: offer._id } }).populate("product").populate("buyer");
         for (const otherOffer of otherOffers) {
           await UserNotification.create({
+            title: otherOffer.product.name,
+            message: `❌ Your offer for has been rejected`,
+            linkUrl: `/products/${otherOffer.product._id}`, 
             user: otherOffer.buyer,
-            message: `❌ Your offer for the product ${offer.product} has been rejected`,
           });
 
           await User.findByIdAndUpdate(otherOffer.buyer, {
@@ -70,7 +73,7 @@ export const PATCH = async (request: Request, { params }: { params: Promise<{ id
   
       return new Response(JSON.stringify(offer), { status: 200 });
     } catch (error: unknown) {
-      console.log(error);
+      console.log('error', error);
       if (error instanceof AxiosError && error.response) {
         return new Response(error.response.data, {
           status: error.response.status,

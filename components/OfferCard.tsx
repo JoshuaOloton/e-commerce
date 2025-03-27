@@ -18,20 +18,23 @@ const OfferCard = ({ offer, updateOffers, offers }: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const updateOfferStatus = async (offerId: string, status: string) => {
+    const prevOffers = [...offers];
+
+    updateOffers(
+      offers.map((offer) => {
+        if (status === 'accepted') {
+          return offer._id === offerId ? { ...offer, status } : { ...offer, status: 'rejected' }
+        } else {
+          return offer._id === offerId ? { ...offer, status } : offer
+        }
+      })
+    );
+
     try {
       const response = await axios.patch(`/api/offers/${offerId}`, { status });
       setLoading(true);
 
       if (response.status === 200) {
-        updateOffers(
-          offers.map((offer) => {
-            if (status === 'accepted') {
-              return offer._id === offerId ? { ...offer, status } : { ...offer, status: 'rejected' }
-            } else {
-              return offer._id === offerId ? { ...offer, status } : offer
-            }
-          })
-        );
 
         if (status === 'accepted')
           toast.success("Offer accepted.");
@@ -46,6 +49,9 @@ const OfferCard = ({ offer, updateOffers, offers }: Props) => {
       } else {
         toast.error("An error occurred while updating offer");
       }
+
+      // Revert to previous state if request fails
+      updateOffers(prevOffers);
     }
     finally {
       setLoading(false);
