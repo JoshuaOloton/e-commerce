@@ -2,6 +2,21 @@
 
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { Bell, Package, Users } from "lucide-react";
+import { ReactElement } from "react";
+
+
+function Card({ title, value, icon } : { title: string, value: string, icon: ReactElement }) {
+  return (
+    <div className="p-4 bg-white dark:bg-gray-800 shadow-md rounded-lg flex items-center gap-4">
+      <div className="p-3 bg-gray-100 dark:bg-gray-700 rounded-md">{icon}</div>
+      <div>
+        <p className="text-sm text-gray-500">{title}</p>
+        <p className="text-lg font-bold">{value}</p>
+      </div>
+    </div>
+  );
+}
 
 const Home = () => {
   const { data: session, status } = useSession();
@@ -12,74 +27,39 @@ const Home = () => {
     <div>
       {/* Main Content */}
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto py-12 px-6">
-        <h2 className="text-3xl font-semibold text-gray-800 mb-6">
-          Welcome Back, Daniel! 👋
-        </h2>
+      <div className="max-w-5xl mx-auto py-12">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-semibold">Admin Dashboard</h1>
+          
+        </div>
 
-        {/* Key Metrics */}
-        <div className="grid md:grid-cols-3 gap-6">
-          {[
-            { label: "Total Sales", count: "₦1,250,000", color: "bg-blue-500" },
-            { label: "Active Products", count: "45", color: "bg-green-500" },
-            { label: "Pending Orders", count: "8", color: "bg-yellow-500" },
-          ].map((stat, index) => (
-            <div
-              key={index}
-              className={`p-6 rounded-lg text-white shadow-md ${stat.color}`}
-            >
-              <h3 className="text-lg">{stat.label}</h3>
-              <p className="text-2xl font-bold">{stat.count}</p>
-            </div>
-          ))}
+        {/* Overview Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 gap-4 mt-6">
+          <Card title="Total Users" value="1,245" icon={<Users size={24} />} />
+          <Card title="Active Listings" value="230" icon={<Package size={24} />} />
+          <Card title="Pending Offers" value="15" icon={<Bell size={24} />} />
+        </div>
+
+        {/* Recent Activity */}
+        <div className="mt-6 p-4 bg-white dark:bg-gray-800 shadow-md rounded-lg">
+          <h2 className="text-lg font-semibold mb-3">Recent Activity</h2>
+          <ul className="space-y-2">
+            <li className="flex justify-between text-sm">
+              <span>John Doe made an offer on a product.</span>
+              <span className="text-gray-500">2 mins ago</span>
+            </li>
+            <li className="flex justify-between text-sm">
+              <span>Admin rejected an offer.</span>
+              <span className="text-gray-500">15 mins ago</span>
+            </li>
+          </ul>
         </div>
 
         {/* Quick Actions */}
-        <div className="mt-10 grid md:grid-cols-3 gap-6">
-          {[
-            { text: "Manage Products", link: "/products", icon: "🛍️" },
-            { text: "View Orders", link: "/seller/orders", icon: "📦" },
-            { text: "Sales Analytics", link: "/seller/analytics", icon: "📊" },
-          ].map((action, index) => (
-            <Link
-              key={index}
-              href={action.link}
-              className="bg-white p-6 rounded-lg shadow-md flex items-center gap-4 hover:shadow-lg transition"
-            >
-              <span className="text-3xl">{action.icon}</span>
-              <p className="text-lg font-semibold">{action.text}</p>
-            </Link>
-          ))}
-        </div>
-
-        {/* Recent Orders */}
-        <div className="mt-12 bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold mb-4">Recent Orders</h3>
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="border-b">
-                <th className="py-2 text-left">Order ID</th>
-                <th className="py-2 text-left">Customer</th>
-                <th className="py-2 text-left">Amount</th>
-                <th className="py-2 text-left">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                { id: "ORD123", customer: "John Doe", amount: "₦15,000", status: "Pending" },
-                { id: "ORD124", customer: "Jane Smith", amount: "₦32,500", status: "Completed" },
-              ].map((order, index) => (
-                <tr key={index} className="border-b">
-                  <td className="py-2">{order.id}</td>
-                  <td className="py-2">{order.customer}</td>
-                  <td className="py-2">{order.amount}</td>
-                  <td className={`py-2 ${order.status === "Pending" ? "text-yellow-500" : "text-green-500"}`}>
-                    {order.status}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button className="p-3 bg-green-600 text-white rounded-md">Manage Offers</button>
+          <button className="p-3 bg-yellow-600 text-white rounded-md">View Notifications</button>
+          <button className="p-3 bg-red-600 text-white rounded-md">Settings</button>
         </div>
       </div>
     </div>
