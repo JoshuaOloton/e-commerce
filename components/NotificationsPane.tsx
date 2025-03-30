@@ -25,7 +25,6 @@ const NotificationsPane = () => {
   const router = useRouter();
   const { data: session } = useSession();
 
-  const [loading, setLoading] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<NotificationType[]>([]);
 
   useEffect(() => {
@@ -40,13 +39,11 @@ const NotificationsPane = () => {
 
     const fetchNotifications = async () => {
       try {
-        setLoading(true);
         const response = await axios.get(`${fetchUrl}?read=false`);
         setNotifications(response.data);
       } catch (error) {
         console.error(error);
       } finally {
-        setLoading(false);
       }
     };
 

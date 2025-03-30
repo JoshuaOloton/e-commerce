@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Bell, Package, Users } from "lucide-react";
 import { ReactElement } from "react";

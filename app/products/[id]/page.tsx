@@ -29,7 +29,7 @@ import Image from "next/image";
 import z from "zod";
 import { ProductSkeleton } from "@/components/LoadingSkeleton";
 import OfferCard from "@/components/OfferCard";
-import AcceptedOfferDialog from "@/components/AcceptedOfferDialog";
+
 
 
 const SingleProduct = () => {

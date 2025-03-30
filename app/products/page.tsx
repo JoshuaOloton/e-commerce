@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell } from "lucide-react";
+
 import { addFilter } from "@/lib/slices/slice";
 import { AxiosError } from "axios";
 import { ProductType } from "@/types";
