@@ -2,7 +2,12 @@ import mongoose, { Schema, Document } from "mongoose";
 import Offer from "./Offer";
 
 interface IProduct extends Document {
-  name: string;
+  name: {
+    en: string,
+    yo: string,
+    ig: string,
+    ha: string
+  };
   desc: string;
   price: number;
   category: string;
@@ -14,7 +19,12 @@ interface IProduct extends Document {
 
 const ProductSchema = new Schema<IProduct>(
   {
-    name: { type: String, required: true, unique: true },
+    name: { 
+      en: { type: String, required: true, unique: true },
+      yo: { type: String, required: true, unique: true },
+      ig: { type: String, required: true, unique: true },
+      ha: { type: String, required: true, unique: true }
+     },
     desc: { type: String, required: true },
     price: { type: Number, required: true },
     category: { type: String, required: true, index: true },
