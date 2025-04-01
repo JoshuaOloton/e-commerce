@@ -25,7 +25,12 @@ const ProductSchema = new Schema<IProduct>(
       ig: { type: String, required: true, unique: true },
       ha: { type: String, required: true, unique: true }
      },
-    desc: { type: String, required: true },
+    desc: { 
+      en: { type: String, required: true, unique: true },
+      yo: { type: String, required: true, unique: true },
+      ig: { type: String, required: true, unique: true },
+      ha: { type: String, required: true, unique: true }
+     },
     price: { type: Number, required: true },
     category: { type: String, required: true, index: true },
     image: { type: String, required: true }, // Store image URL
