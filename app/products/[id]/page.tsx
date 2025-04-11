@@ -29,6 +29,7 @@ import Image from "next/image";
 import z from "zod";
 import { ProductSkeleton } from "@/components/LoadingSkeleton";
 import OfferCard from "@/components/OfferCard";
+import { Language } from "@/types";
 
 
 
@@ -43,6 +44,8 @@ const SingleProduct = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [placeOffer, setPlaceOffer] = useState<boolean>(false);
   const [offers, setOffers] = useState<OfferType[]>([]);
+
+  const userLang = session?.user?.language || "en" as Language; // fallback to English
 
   const {
     register,
@@ -184,21 +187,21 @@ const SingleProduct = () => {
         <div className="bg-gray-100 flex-1/2 p-4 rounded">
           <Image
             src={product.image}
-            alt={product.name}
+            alt={product.name.en}
             width={300}
             height={300}
             className="mx-auto w-full"
           />
         </div>
         <div className="my-8 flex-1/2">
-          <h1 className="font-bold text-lg md:text-xl mb-2">{product.name}</h1>
+          <h1 className="font-bold text-lg md:text-xl mb-2">{product.name[userLang]}</h1>
           <p className="uppercase text-sm tracking-widest text-gray-700">
             {product.category}
           </p>
           <p>Starting Price?: N{product.price}</p>
           <div className="mt-4">
             <h5 className="font-bold">Description</h5>
-            <p>{product.desc}</p>
+            <p>{product.desc[userLang]}</p>
             {session?.user.role === "user" ? (
               offers.length > 0 ? (
                 showOfferStatus(offers[0].status)

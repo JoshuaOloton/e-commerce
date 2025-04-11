@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { objectSchema } from "@/types";
+import { useSession } from "next-auth/react";
 
 const ProductCard = ({
   id,
@@ -9,11 +11,14 @@ const ProductCard = ({
   price,
 }: {
   id: string;
-  name: string;
+  name: objectSchema;
   image: string;
-  desc: string;
+  desc: objectSchema;
   price: number;
 }) => {
+  const { data: session } = useSession();
+  const userLang = session?.user?.language || "en"; // fallback to English
+
   return (
     <Link
       className="ring ring-blue-500/20 p-4 rounded-lg bg-gray-50 hover:bg-gray-200 cursor-pointer hover:shadow-lg shadow-cyan-500/20 transition-all duration-700 group"
@@ -23,7 +28,7 @@ const ProductCard = ({
         <div className="w-52 h-52 mx-auto relative">
           <Image
             src={image}
-            alt={name}
+            alt={name.en}
             fill={true}
             // width={300}
             // height={300}
@@ -31,9 +36,9 @@ const ProductCard = ({
           />
         </div>
         <div>
-          <h3 className="font-bold lg:text-lg mb-3">{name}</h3>
+          <h3 className="font-bold lg:text-lg mb-3">{name[userLang]}</h3>
           <p className="text-sm leading-6 tracking-wide mb-2">
-            {desc.slice(0, 40)}...
+            {desc[userLang].slice(0, 40)}...
           </p>
           <span className="text-sm text-gray-500">N{price}</span>
         </div>

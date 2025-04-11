@@ -15,6 +15,7 @@ declare module "next-auth" {
       email?: string | null;
       image?: string | null;
       role: string;
+      language: string;
     };
   }
 
@@ -87,6 +88,7 @@ export const options: NextAuthOptions = {
 
         session.user._id = sessionUser?._id;
         session.user.role = token.role;
+        session.user.language = sessionUser?.language;
       }
       return session;
     }

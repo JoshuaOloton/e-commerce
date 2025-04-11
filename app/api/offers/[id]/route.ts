@@ -28,7 +28,12 @@ export const PATCH = async (request: Request, { params }: { params: Promise<{ id
 
       // Create a new user notification
       await UserNotification.create({
-        title: offer.product.name,
+        title: {
+          en: offer.product.name.en,
+          yo: offer.product.name.yo,
+          ig: offer.product.name.ig,
+          ha: offer.product.name.ha
+        },
         message: `${messageEmoji} Your offer has been ${status}`,
         // default read is false
         linkUrl: `/products/${offer.product._id}`,
@@ -50,7 +55,12 @@ export const PATCH = async (request: Request, { params }: { params: Promise<{ id
         const otherOffers = await Offer.find({ product: offer.product, _id: { $ne: offer._id } }).populate("product").populate("buyer");
         for (const otherOffer of otherOffers) {
           await UserNotification.create({
-            title: otherOffer.product.name,
+            title: {
+              en: otherOffer.product.name.en,
+              yo: otherOffer.product.name.yo,
+              ig: otherOffer.product.name.ig,
+              ha: otherOffer.product.name.ha
+            },
             message: `❌ Your offer for has been rejected`,
             linkUrl: `/products/${otherOffer.product._id}`, 
             user: otherOffer.buyer,

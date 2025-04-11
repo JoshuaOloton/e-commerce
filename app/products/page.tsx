@@ -1,6 +1,7 @@
 "use client";
 
 
+import axios from "axios";
 import { addFilter } from "@/lib/slices/slice";
 import { AxiosError } from "axios";
 import { ProductType } from "@/types";
@@ -9,7 +10,6 @@ import type { RootState } from "../../lib/store";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import ProductCard from "@/components/ProductCard";
 import { ProductsSkeleton } from "@/components/LoadingSkeleton";
 import SearchBar from "@/components/SearchBar";
@@ -137,9 +137,19 @@ const Products = () => {
                     <ProductCard
                       key={product._id}
                       id={product._id}
-                      name={product.name}
+                      name={{
+                        en: product.name.en,
+                        yo: product.name.yo,
+                        ig: product.name.ig,
+                        ha: product.name.ha,
+                      }}
                       image={product.image}
-                      desc={product.desc}
+                      desc={{
+                        en: product.desc.en,
+                        yo: product.desc.yo,
+                        ig: product.desc.ig,
+                        ha: product.desc.ha,
+                      }}
                       price={product.price}
                     />
                   ))}

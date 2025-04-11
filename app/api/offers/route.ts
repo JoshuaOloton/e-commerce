@@ -36,7 +36,12 @@ export const POST = async (request: Request) => {
 
     // Create a new admin notification
     await AdminNotification.create({
-      title: offer.product.name,
+      title: {
+        en: offer.product.name.en,
+        yo: offer.product.name.yo,
+        ig: offer.product.name.ig,
+        ha: offer.product.name.ha
+      },
       message: `🎉 ${offer.buyer.name} has offered ${offerPrice}.`,
       linkUrl: `/products/${productId}`,
       // default read is false
