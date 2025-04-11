@@ -17,21 +17,31 @@ export const LoginSchema = z.object({
 
 export type LoginFormFields = z.infer<typeof LoginSchema>;
 
-
-export const RegisterSchema = z
+export const RegisterStep1Schema = z
   .object({
     name: z.string().min(6),
     email: z.string().email(),
     password: passwordSchema,
-    confirmPassword: z.string(),
+    confirmPassword: z.string()
   })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
 
-export type RegisterFormFields = z.infer<typeof RegisterSchema>;
+export const RegisterStep2Schema = z.object({
+  language: z.string().min(1, "Please select a language")
+});
+
+export const RegisterFullSchema = RegisterStep1Schema.merge(RegisterStep2Schema);
+
+export const ValidatedRegisterSchema = RegisterFullSchema.refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+});
+
+export type RegisterStep1Fields = z.infer<typeof RegisterStep1Schema>;
+export type RegisterFormFields = z.infer<typeof RegisterFullSchema>;
+export type ValidatedRegisterFields = z.infer<typeof ValidatedRegisterSchema>; 
 
 export const MakeOfferSchema = z.object({
-  offerPrice: z.coerce.number({ invalid_type_error: "Amount must be a number" }).min(1000),
+  offerPrice: z.coerce
+    .number({ invalid_type_error: "Amount must be a number" })
+    .min(1000),
 });

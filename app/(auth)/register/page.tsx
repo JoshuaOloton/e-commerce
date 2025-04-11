@@ -2,31 +2,60 @@
 
 import axios from "axios";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { RegisterSchema, RegisterFormFields } from "@/schemas";
+import { ValidatedRegisterSchema, ValidatedRegisterFields } from "@/schemas";
+import { motion, AnimatePresence } from "motion/react"
 import { toast } from "sonner";
-import { useEffect } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 export default function Register() {
   const router = useRouter();
   const { status } = useSession();
 
+  const [step, setStep] = useState<1 | 2>(1);  
+
   const {
     register,
+    control,
     handleSubmit,
+    trigger,
     formState: { errors, isSubmitting },
-  } = useForm<RegisterFormFields>({
-    resolver: zodResolver(RegisterSchema),
+  } = useForm<ValidatedRegisterFields>({
+    resolver: zodResolver(ValidatedRegisterSchema),
+    defaultValues: {
+      language: "",
+    },
   });
 
-  const onSubmit: SubmitHandler<RegisterFormFields> = async (formData) => {
-    console.log("On submit");
+  const handleNext = async () => {
+    console.log("handle next");
+
+    const isStep1Valid = await trigger(["name", "email", "password", "confirmPassword"]);
+    if (isStep1Valid) {
+      setStep(2);
+    }
+  };
+
+  const finalSubmit: SubmitHandler<ValidatedRegisterFields> = async (formData) => {
+    console.log("final submit", formData);
+
     try {
       const response = await axios.post("/api/register", formData);
       console.log(response);
@@ -44,14 +73,14 @@ export default function Register() {
         toast.error("An error occurred. Please try again.");
       }
     }
-  };
+  }
 
   useEffect(() => {
-      if (status === "authenticated") {
-        toast.info("You are already logged in.");
-        router.replace("/");
-      }
-    }, [status, router]);
+    if (status === "authenticated") {
+      toast.info("You are already logged in.");
+      router.replace("/");
+    }
+  }, [status, router]);
 
   return (
     <section>
@@ -64,48 +93,96 @@ export default function Register() {
               <h5 className="font-bold text-3xl md:text-4xl">Create Account</h5>
               <p className="text-gray-400">Please enter details</p>
             </div>
-            <form className="flex flex-col space-y-5" method="post" onSubmit={handleSubmit(onSubmit)}>
-              <label>
-                <span className="text-gray-700 text-sm font-medium">
-                  Full Name <span className="text-red-900">*</span>
-                </span>
-                <Input {...register("name")} />
-                {errors.name && (
-                  <span className="error_span">{errors.name.message}</span>
-                )}
-              </label>
-              <label>
-                <span className="text-gray-700 text-sm font-medium">
-                  Email Address <span className="text-red-900">*</span>
-                </span>
-                <Input type="email" {...register("email")} />
-                {errors.email && (
-                  <span className="error_span">{errors.email.message}</span>
-                )}
-              </label>
-              <label>
-                <span className="text-gray-700 text-sm font-medium">
-                  Password <span className="text-red-900">*</span>
-                </span>
-                <Input type="password" {...register("password")} />
-                {errors.password && (
-                  <span className="error_span">{errors.password.message}</span>
-                )}
-              </label>
-              <label>
-                <span className="text-gray-700 text-sm font-medium">
-                  Confirm Password <span className="text-red-900">*</span>
-                </span>
-                <Input type="password" {...register("confirmPassword")} />
-                {errors.confirmPassword && (
-                  <span className="error_span">
-                    {errors.confirmPassword.message}
-                  </span>
-                )}
-              </label>
-              <Button disabled={isSubmitting} type="submit">
-                {isSubmitting ? "Loading..." : "Sign Up"}
-              </Button>
+            <form className="flex flex-col space-y-5" method="post" onSubmit={handleSubmit(finalSubmit)}>
+
+              <AnimatePresence mode="wait">
+                { step === 1 && (
+                  <motion.div className="flex flex-col space-y-5">
+                    <label>
+                      <span className="text-gray-700 text-sm font-medium">
+                        Full Name <span className="text-red-900">*</span>
+                      </span>
+                      <Input {...register("name")} />
+                      {errors.name && (
+                        <span className="error_span">{errors.name.message}</span>
+                      )}
+                    </label>
+                    <label>
+                      <span className="text-gray-700 text-sm font-medium">
+                        Email Address <span className="text-red-900">*</span>
+                      </span>
+                      <Input type="email" {...register("email")} />
+                      {errors.email && (
+                        <span className="error_span">{errors.email.message}</span>
+                      )}
+                    </label>
+                    <label>
+                      <span className="text-gray-700 text-sm font-medium">
+                        Password <span className="text-red-900">*</span>
+                      </span>
+                      <Input type="password" {...register("password")} />
+                      {errors.password && (
+                        <span className="error_span">{errors.password.message}</span>
+                      )}
+                    </label>
+                    <label>
+                      <span className="text-gray-700 text-sm font-medium">
+                        Confirm Password <span className="text-red-900">*</span>
+                      </span>
+                      <Input type="password" {...register("confirmPassword")} />
+                      {errors.confirmPassword && (
+                        <span className="error_span">
+                          {errors.confirmPassword.message}
+                        </span>
+                      )}
+                    </label>
+
+                    <Button type="button" className="cursor-pointer" onClick={handleNext}>
+                      Continue
+                      <ArrowRight />
+                    </Button>
+                  </motion.div>
+                ) }
+              </AnimatePresence>
+              
+              { step === 2  && (
+                <motion.div
+                  key="step2"
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -30 }}
+                  className="flex flex-col space-y-5"
+                >
+                  <Controller
+                    name="language"
+                    control={control}
+                    render={({ field }) => (
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select Language preference" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Language</SelectLabel>
+                            <SelectItem value="en">English</SelectItem>
+                            <SelectItem value="yo">Yoruba</SelectItem>
+                            <SelectItem value="ig">Igbo</SelectItem>
+                            <SelectItem value="ha">Hausa</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  {errors.language && (
+                    <span className="error_span">{errors.language.message}</span>
+                  )}
+
+                  <Button disabled={isSubmitting} type="submit" className="cursor-pointer">
+                    {isSubmitting ? "Loading..." : "Sign Up"}
+                  </Button>
+                </motion.div>
+              )}
+              
             </form>
             <p className="">
               Already have an account?{" "}
