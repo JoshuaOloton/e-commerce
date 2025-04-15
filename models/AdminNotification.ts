@@ -9,7 +9,12 @@ interface IAdminNotification extends Document {
 
 const AdminNotificationSchema = new Schema<IAdminNotification>(
   {
-    title: { type: String, required: true },
+    title: { 
+      en: { type: String, required: true, unique: true },
+      yo: { type: String, required: true, unique: true },
+      ig: { type: String, required: true, unique: true },
+      ha: { type: String, required: true, unique: true }
+     },
     message: { type: String, required: true },
     read: { type: Boolean, default: false, index: true },
     linkUrl: { type: String, required: true },

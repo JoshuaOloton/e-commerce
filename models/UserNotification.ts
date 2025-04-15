@@ -10,7 +10,12 @@ interface IUserNotification extends Document {
 }
 
 const UserNotificationSchema = new Schema<IUserNotification>({
-  title: { type: String, required: true },
+  title: { 
+    en: { type: String, required: true, unique: true },
+    yo: { type: String, required: true, unique: true },
+    ig: { type: String, required: true, unique: true },
+    ha: { type: String, required: true, unique: true }
+   },
   message: { type: String, required: true },
   read: { type: Boolean, default: false, index: true },
   linkUrl: { type: String, required: true },
