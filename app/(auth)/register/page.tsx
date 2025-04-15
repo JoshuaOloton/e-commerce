@@ -85,7 +85,7 @@ export default function Register() {
   return (
     <section>
       <div className="flex justify-center h-screen">
-      <div className="flex-1 relative hidden md:block p-0 bg-[url(/assets/images/auth2.jpeg)] bg-cover">
+      <div className="flex-1 relative hidden md:block p-0 bg-[url(/assets/images/auth.jpeg)] bg-cover">
       </div>
         <div className="flex items-center flex-1">
           <div className="flex flex-col gap-5 w-4/5 max-w-96 mx-auto">

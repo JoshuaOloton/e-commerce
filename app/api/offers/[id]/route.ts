@@ -46,11 +46,6 @@ export const PATCH = async (request: Request, { params }: { params: Promise<{ id
   
       if (status === "accepted") {
     
-        // await Offer.updateMany(
-        //   { product: offer.product, _id: { $ne: offer._id } },
-        //   { status: "rejected" }
-        // );
-
         // Send notification to all other buyers and update all other offers for the product to rejected
         const otherOffers = await Offer.find({ product: offer.product, _id: { $ne: offer._id } }).populate("product").populate("buyer");
         for (const otherOffer of otherOffers) {
