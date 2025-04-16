@@ -132,7 +132,7 @@ const NotificationsPane = () => {
                 }
               >
                 <h3 className="text-sm text-gray-700 font-bold mb-2 italic">
-                  {notification.title}
+                  {notification.title.en}
                 </h3>
                 <p className="text-xs text-gray-400">{notification.message}</p>
               </div>

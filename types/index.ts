@@ -36,7 +36,7 @@ interface UserType {
 
 export interface NotificationType {
   _id: string;
-  title: string;
+  title: objectSchema;
   message: string;
   read: boolean;
   linkUrl: string;

@@ -15,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 export default function Login() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { status} = useSession();
+  const { data: session, status} = useSession();
 
   const hasShownToast = useRef(false); // to prevent multiple toasts
 
@@ -28,14 +28,12 @@ export default function Login() {
   });
 
   const onSubmit: SubmitHandler<LoginFormFields> = async (formData) => {
-    console.log("Am i here");
     const result : SignInResponse | undefined = await signIn("credentials", {
       email: formData.email,
       password: formData.password,
       redirect: false
     });
     
-    console.log('result', result);
     if (result?.error) {
       toast.error("Please check your credentials and try again.");
       return;
@@ -46,7 +44,7 @@ export default function Login() {
   };
 
   useEffect(() => {
-    if (status === "authenticated") {
+    if (session) {
       toast.info("You are already logged in.");
       router.replace("/");
     }

@@ -14,17 +14,21 @@ import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const { data: session } = useSession();
+  console.log(session);
   const router = useRouter();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const logOut = () => {
+    if (!session) return;
+    // if session is not available, do nothing
     signOut({
       redirect: false,
     }); // signout redirects to / home page by default
     // pass redirect: false to signOut to prevent redirection
     toast.info("Logout successful");
-    router.replace("/");
+
+    (session.user.role === 'user') ? router.replace("/") : router.replace("/home");
   };
 
   return (
