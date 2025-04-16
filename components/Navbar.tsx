@@ -28,11 +28,7 @@ const Navbar = () => {
     // pass redirect: false to signOut to prevent redirection
     toast.info("Logout successful");
 
-    if (session.user.role === 'user') {
-      router.replace("/") 
-    } else {
-      router.replace("/home");
-    }
+    router.replace("/");
   };
 
   return (

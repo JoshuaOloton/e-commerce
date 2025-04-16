@@ -37,7 +37,7 @@ export async function middleware(req: NextRequestWithAuth) {
   if (publicRoutes.includes(pathname)) {
     // Redirect admin users to dashboard if they try to access "/"
     if (isAuthenticated && isAdmin && pathname === "/") {
-      return NextResponse.redirect(new URL("/home", req.url));
+      // return NextResponse.redirect(new URL("/home", req.url));
     }
     return NextResponse.next();
   }
