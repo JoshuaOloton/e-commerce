@@ -3,6 +3,7 @@
 import clsx from "clsx";
 import Link from "next/link";
 import NotificationsPane from "./NotificationsPane";
+import { AnimatePresence, motion } from "motion/react";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import { useState } from "react";
@@ -47,46 +48,54 @@ const Navbar = () => {
               "bg-gray-300": isMenuOpen,
             })}
           />
-          {isMenuOpen && (
-            <ul className="flex flex-col gap-3 items-center absolute top-full right-2 p-4 rounded-lg border border-gray-700 w-52 bg-gray-200 shadow-lg z-10">
-              <li>
-                <Link href="/" className="font-medium hover:animate-pulse">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/products"
-                  className="font-medium hover:animate-pulse"
-                >
-                  Shop
-                </Link>
-              </li>
-              {session ? (
-                <>
-                  <li>
-                    <Link
-                      href="/profile"
-                      className="font-medium hover:animate-pulse"
-                    >
-                      Profile
-                    </Link>
-                  </li>
-                  <li>
-                    <Button className="cursor-pointer" onClick={logOut}>
-                      Logout
-                    </Button>
-                  </li>
-                </>
-              ) : (
+          <AnimatePresence>
+            {isMenuOpen && (
+              <motion.ul 
+                key="mobile-menu"
+                initial={{ opacity: 0, x: '100%' }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: '100%' }}
+                // transition={{ duration: 0.2 }}
+                className="flex flex-col gap-3 items-center absolute top-full right-2 p-4 rounded-lg border border-gray-700 w-52 bg-gray-200 shadow-lg z-10">
                 <li>
-                  <Link href="/login">
-                    <Button className="cursor-pointer">Login</Button>
+                  <Link href="/" className="font-medium hover:animate-pulse">
+                    Home
                   </Link>
                 </li>
-              )}
-            </ul>
-          )}
+                <li>
+                  <Link
+                    href="/products"
+                    className="font-medium hover:animate-pulse"
+                  >
+                    Shop
+                  </Link>
+                </li>
+                {session ? (
+                  <>
+                    <li>
+                      <Link
+                        href="/profile"
+                        className="font-medium hover:animate-pulse"
+                      >
+                        Profile
+                      </Link>
+                    </li>
+                    <li>
+                      <Button className="cursor-pointer" onClick={logOut}>
+                        Logout
+                      </Button>
+                    </li>
+                  </>
+                ) : (
+                  <li>
+                    <Link href="/login">
+                      <Button className="cursor-pointer">Login</Button>
+                    </Link>
+                  </li>
+                )}
+              </motion.ul>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Desktop Nav */}
