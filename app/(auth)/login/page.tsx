@@ -9,13 +9,11 @@ import { toast } from "sonner";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-// import { useSession } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function Login() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  // const { data: session, status} = useSession();
 
   const hasShownToast = useRef(false); // to prevent multiple toasts
 
@@ -42,13 +40,6 @@ export default function Login() {
     router.push("/");
     toast.success("Login successful");
   };
-
-  // useEffect(() => {
-  //   if (session) {
-  //     toast.info("You are already logged in.");
-  //     router.replace("/");
-  //   }
-  // }, [status, router, session]);
 
   useEffect(() => {
     const errorMessage = searchParams.get("auth");

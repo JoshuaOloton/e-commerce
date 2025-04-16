@@ -9,10 +9,9 @@ import { Input } from "@/components/ui/input";
 import { ValidatedRegisterSchema, ValidatedRegisterFields } from "@/schemas";
 import { motion, AnimatePresence } from "motion/react"
 import { toast } from "sonner";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
@@ -27,7 +26,6 @@ import {
 
 export default function Register() {
   const router = useRouter();
-  const { status } = useSession();
 
   const [step, setStep] = useState<1 | 2>(1);  
 
@@ -74,13 +72,6 @@ export default function Register() {
       }
     }
   }
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      toast.info("You are already logged in.");
-      router.replace("/");
-    }
-  }, [status, router]);
 
   return (
     <section>
