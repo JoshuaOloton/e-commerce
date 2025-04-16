@@ -7,7 +7,7 @@ import { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ValidatedRegisterSchema, ValidatedRegisterFields } from "@/schemas";
-import { motion, AnimatePresence } from "motion/react"
+import { motion } from "motion/react"
 import { toast } from "sonner";
 import { useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
@@ -86,62 +86,59 @@ export default function Register() {
             </div>
             <form className="flex flex-col space-y-5" method="post" onSubmit={handleSubmit(finalSubmit)}>
 
-              <AnimatePresence mode="wait">
-                { step === 1 && (
-                  <motion.div className="flex flex-col space-y-5">
-                    <label>
-                      <span className="text-gray-700 text-sm font-medium">
-                        Full Name <span className="text-red-900">*</span>
+              { step === 1 && (
+                <div className="flex flex-col space-y-5">
+                  <label>
+                    <span className="text-gray-700 text-sm font-medium">
+                      Full Name <span className="text-red-900">*</span>
+                    </span>
+                    <Input {...register("name")} />
+                    {errors.name && (
+                      <span className="error_span">{errors.name.message}</span>
+                    )}
+                  </label>
+                  <label>
+                    <span className="text-gray-700 text-sm font-medium">
+                      Email Address <span className="text-red-900">*</span>
+                    </span>
+                    <Input type="email" {...register("email")} />
+                    {errors.email && (
+                      <span className="error_span">{errors.email.message}</span>
+                    )}
+                  </label>
+                  <label>
+                    <span className="text-gray-700 text-sm font-medium">
+                      Password <span className="text-red-900">*</span>
+                    </span>
+                    <Input type="password" {...register("password")} />
+                    {errors.password && (
+                      <span className="error_span">{errors.password.message}</span>
+                    )}
+                  </label>
+                  <label>
+                    <span className="text-gray-700 text-sm font-medium">
+                      Confirm Password <span className="text-red-900">*</span>
+                    </span>
+                    <Input type="password" {...register("confirmPassword")} />
+                    {errors.confirmPassword && (
+                      <span className="error_span">
+                        {errors.confirmPassword.message}
                       </span>
-                      <Input {...register("name")} />
-                      {errors.name && (
-                        <span className="error_span">{errors.name.message}</span>
-                      )}
-                    </label>
-                    <label>
-                      <span className="text-gray-700 text-sm font-medium">
-                        Email Address <span className="text-red-900">*</span>
-                      </span>
-                      <Input type="email" {...register("email")} />
-                      {errors.email && (
-                        <span className="error_span">{errors.email.message}</span>
-                      )}
-                    </label>
-                    <label>
-                      <span className="text-gray-700 text-sm font-medium">
-                        Password <span className="text-red-900">*</span>
-                      </span>
-                      <Input type="password" {...register("password")} />
-                      {errors.password && (
-                        <span className="error_span">{errors.password.message}</span>
-                      )}
-                    </label>
-                    <label>
-                      <span className="text-gray-700 text-sm font-medium">
-                        Confirm Password <span className="text-red-900">*</span>
-                      </span>
-                      <Input type="password" {...register("confirmPassword")} />
-                      {errors.confirmPassword && (
-                        <span className="error_span">
-                          {errors.confirmPassword.message}
-                        </span>
-                      )}
-                    </label>
+                    )}
+                  </label>
 
-                    <Button type="button" className="cursor-pointer" onClick={handleNext}>
-                      Continue
-                      <ArrowRight />
-                    </Button>
-                  </motion.div>
-                ) }
-              </AnimatePresence>
+                  <Button type="button" className="cursor-pointer" onClick={handleNext}>
+                    Continue
+                    <ArrowRight />
+                  </Button>
+                </div>
+              ) }
               
               { step === 2  && (
                 <motion.div
                   key="step2"
                   initial={{ opacity: 0, x: 30 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -30 }}
                   className="flex flex-col space-y-5"
                 >
                   <Controller
@@ -170,6 +167,9 @@ export default function Register() {
 
                   <Button disabled={isSubmitting} type="submit" className="cursor-pointer">
                     {isSubmitting ? "Loading..." : "Sign Up"}
+                  </Button>
+                  <Button onClick={() => setStep(1)} variant="outline" className="cursor-pointer">
+                    Go Back
                   </Button>
                 </motion.div>
               )}
