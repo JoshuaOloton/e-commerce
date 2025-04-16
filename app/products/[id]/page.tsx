@@ -57,6 +57,11 @@ const SingleProduct = () => {
 
   const updateOffers = (offers: OfferType[]) => setOffers(offers);
 
+  const copyToClipboard = async() => {
+    navigator.clipboard.writeText('+234000000000')
+    toast.info('Copied to clipboard.')
+  }
+
   const onSubmit: SubmitHandler<z.infer<typeof MakeOfferSchema>> = async (
     formData
   ) => {
@@ -150,12 +155,16 @@ const SingleProduct = () => {
             <p className="font-semibold">Offer Accepted!</p>
             <p className="text-sm">Contact the seller to arrange payment and delivery details.</p>
             <div className="mt-2 flex gap-4">
-              <a href={`tel:234000000000`} className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
-                Call Seller
-              </a>
-              <button className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
+              <Button 
+                variant={"default"} 
+                className="px-4 py-2 my-3 bg-green-600 text-white rounded-md hover:bg-green-700 cursor-pointer" 
+                onClick={copyToClipboard}
+              >
+                Copy Seller Contact Info
+              </Button>
+              {/* <Button variant={"secondary"} className="px-4 py-2 ">
                 Mark as Completed
-              </button>
+              </Button> */}
             </div>
           </div>
         );
