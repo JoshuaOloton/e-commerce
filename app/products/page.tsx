@@ -151,6 +151,12 @@ const Products = () => {
                         ha: product.desc.ha,
                       }}
                       price={product.price}
+                      priceLang={{
+                        en: product.priceLang.en,
+                        yo: product.priceLang.yo,
+                        ig: product.priceLang.ig,
+                        ha: product.priceLang.ha,
+                      }}
                     />
                   ))}
                 </div>

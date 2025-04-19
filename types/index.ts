@@ -12,6 +12,7 @@ export interface ProductType {
   _id: string;
   name: objectSchema;
   price: number;
+  priceLang: objectSchema;
   image: string;
   category: string;
   desc: objectSchema;

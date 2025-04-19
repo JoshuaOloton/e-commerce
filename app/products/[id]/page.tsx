@@ -207,7 +207,7 @@ const SingleProduct = () => {
           <p className="uppercase text-sm tracking-widest text-gray-700">
             {product.category}
           </p>
-          <p>Starting Price?: N{product.price}</p>
+          <p>Price: N{product.price} ({product.priceLang[userLang]})</p>
           <div className="mt-4">
             <h5 className="font-bold">Description</h5>
             <p>{product.desc[userLang]}</p>

@@ -9,12 +9,14 @@ const ProductCard = ({
   image,
   desc,
   price,
+  priceLang
 }: {
   id: string;
   name: objectSchema;
   image: string;
   desc: objectSchema;
   price: number;
+  priceLang: objectSchema;
 }) => {
   const { data: session } = useSession();
   const userLang = session?.user?.language || "en"; // fallback to English
@@ -40,7 +42,7 @@ const ProductCard = ({
           <p className="text-sm leading-6 tracking-wide mb-2">
             {desc[userLang].slice(0, 40)}...
           </p>
-          <span className="text-sm text-gray-500">N{price}</span>
+          <span className="text-sm text-gray-500">N{price} ({priceLang[userLang]})</span>
         </div>
       </div>
     </Link>
